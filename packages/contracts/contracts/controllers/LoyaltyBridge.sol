@@ -10,9 +10,9 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 import "loyalty-tokens/contracts/BIP20/BIP20DelegatedTransfer.sol";
 
-import "dms-bridge-contracts-v2/contracts/interfaces/IBridge.sol";
-import "dms-bridge-contracts-v2/contracts/interfaces/IBridgeValidator.sol";
-import "dms-bridge-contracts-v2/contracts/lib/BridgeLib.sol";
+import "acc-bridge-contracts-v2/contracts/interfaces/IBridge.sol";
+import "acc-bridge-contracts-v2/contracts/interfaces/IBridgeValidator.sol";
+import "acc-bridge-contracts-v2/contracts/lib/BridgeLib.sol";
 
 import "../interfaces/ILedger.sol";
 import "./LoyaltyBridgeStorage.sol";

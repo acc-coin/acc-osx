@@ -1,8 +1,8 @@
 {
   "name": "dms-osx",
   "version": "1.0.0",
-  "description": "A smart contract framework that decentralized point systems",
-  "repository": "https://github.com/bosagora/dms-osx",
+  "description": "A smart contract framework that decentralized loyalty systems",
+  "repository": "https://github.com/acc-coin/acc-osx",
   "author": "BOSagora Foundation",
   "license": "AGPL-3.0-or-later",
   "private": true,
