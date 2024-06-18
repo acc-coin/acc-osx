@@ -209,9 +209,9 @@
 
 ## 2. URL
 
--   메인넷: https://relay.acc.bosagora.org
--   테스트넷: https://relay.test.acc.bosagora.org
--   개발넷: http://relay.dev.acc.bosagora.org:27070
+-   메인넷: https://relay.main.acccoin.io
+-   테스트넷: https://relay.test.acccoin.io
+-   개발넷: http://relay.dev.acccoin.io:27070
 
 [상단으로 이동](#로열티를-사용한-결제-프로세스)
 
