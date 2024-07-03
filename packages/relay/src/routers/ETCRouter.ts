@@ -95,6 +95,12 @@ export class ETCRouter {
             [param("account").exists().trim().isEthereumAddress(), query("type").exists()],
             this.mobile_info.bind(this)
         );
+
+        this.app.get(
+            "/v1/mobile/exists/:account",
+            [param("account").exists().trim().isEthereumAddress(), query("type").exists()],
+            this.mobile_exists.bind(this)
+        );
     }
 
     /**
@@ -217,6 +223,40 @@ export class ETCRouter {
         } catch (error: any) {
             const msg = ResponseMessage.getEVMErrorMessage(error);
             logger.error(`GET /v1/mobile/info : ${msg.error.message}`);
+            this.metrics.add("failure", 1);
+            return res.status(200).json(msg);
+        }
+    }
+
+    /**
+     * GET /v1/mobile/exists
+     * @private
+     */
+    private async mobile_exists(req: express.Request, res: express.Response) {
+        logger.http(`GET /v1/mobile/exists ${req.ip}:${JSON.stringify(req.params)}`);
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(200).json(ResponseMessage.getErrorMessage("2001", { validation: errors.array() }));
+        }
+
+        try {
+            const account: string = String(req.params.account).trim();
+            const type: number = Number(req.query.type);
+            const mobileData = await this.storage.getMobile(account, type);
+            const exists = mobileData !== undefined && mobileData.account.toLowerCase() === account.toLowerCase();
+
+            this.metrics.add("success", 1);
+            return res.status(200).json(
+                this.makeResponseData(0, {
+                    account,
+                    type,
+                    exists,
+                })
+            );
+        } catch (error: any) {
+            const msg = ResponseMessage.getEVMErrorMessage(error);
+            logger.error(`GET /v1/mobile/exists : ${msg.error.message}`);
             this.metrics.add("failure", 1);
             return res.status(200).json(msg);
         }
