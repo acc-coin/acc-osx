@@ -44,7 +44,7 @@ interface IAccount {
     tokenOwners: Wallet[];
 }
 
-type FnDeployer = (accounts: IAccount, deployment: Deployments) => void;
+type FnDeployer = (accounts: IAccount, deployment: Deployments) => Promise<any>;
 
 class Deployments {
     public deployments: Map<string, IDeployedContract>;
@@ -379,7 +379,7 @@ async function deployLoyaltyBridge(accounts: IAccount, deployment: Deployments) 
     const factory = await hre.ethers.getContractFactory("Bridge");
     const contract = (await hre.upgrades.deployProxy(
         factory.connect(accounts.deployer),
-        [await deployment.getContractAddress("BridgeValidator"), accounts.txFee.address],
+        [deployment.getContractAddress("BridgeValidator"), accounts.txFee.address],
         {
             initializer: "initialize",
             kind: "uups",
@@ -392,7 +392,7 @@ async function deployLoyaltyBridge(accounts: IAccount, deployment: Deployments) 
     console.log(`Deployed ${contractName} to ${contract.address}`);
 
     {
-        const tokenContract = (await deployment.getContract("LoyaltyToken")) as LoyaltyToken;
+        const tokenContract = deployment.getContract("LoyaltyToken") as LoyaltyToken;
         const tokenId = ContractUtils.getTokenId(await tokenContract.name(), await tokenContract.symbol());
         const tx = await contract.connect(accounts.deployer).registerToken(tokenId, tokenContract.address);
         console.log(`Register Token (tx: ${tx.hash})...`);
@@ -415,7 +415,7 @@ async function deployMainChainBridge(accounts: IAccount, deployment: Deployments
     const factory = await hre.ethers.getContractFactory("Bridge");
     const contract = (await hre.upgrades.deployProxy(
         factory.connect(accounts.deployer),
-        [await deployment.getContractAddress("BridgeValidator"), accounts.txFee.address],
+        [deployment.getContractAddress("BridgeValidator"), accounts.txFee.address],
         {
             initializer: "initialize",
             kind: "uups",
@@ -428,7 +428,7 @@ async function deployMainChainBridge(accounts: IAccount, deployment: Deployments
     console.log(`Deployed ${contractName} to ${contract.address}`);
 
     {
-        const tokenContract = (await deployment.getContract("LoyaltyToken")) as LoyaltyToken;
+        const tokenContract = deployment.getContract("LoyaltyToken") as LoyaltyToken;
         const tokenId = ContractUtils.getTokenId(await tokenContract.name(), await tokenContract.symbol());
         const tx = await contract.connect(accounts.deployer).registerToken(tokenId, tokenContract.address);
         console.log(`Register Token (tx: ${tx.hash})...`);
