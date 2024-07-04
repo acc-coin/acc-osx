@@ -79,6 +79,16 @@ export class Config implements IConfig {
         this.relay.readFromObject(cfg.relay);
         this.contracts.readFromObject(cfg.contracts);
         this.metrics.readFromObject(cfg.metrics);
+
+        console.log("Config.server", JSON.stringify(this.server));
+        console.log("Config.database", JSON.stringify(this.database));
+        console.log("Config.graph_sidechain", JSON.stringify(this.graph_sidechain));
+        console.log("Config.graph_mainchain", JSON.stringify(this.graph_mainchain));
+        console.log("Config.logging", JSON.stringify(this.logging));
+        console.log("Config.scheduler", JSON.stringify(this.scheduler));
+        console.log("Config.relay", JSON.stringify(this.relay));
+        console.log("Config.contracts", JSON.stringify(this.contracts));
+        console.log("Config.metrics", JSON.stringify(this.metrics));
     }
 }
 
@@ -249,7 +259,7 @@ export class RelayConfig implements IRelayConfig {
         if (config.expoAccessToken !== undefined) this.expoAccessToken = config.expoAccessToken;
         if (config.relayEndpoint !== undefined) this.relayEndpoint = config.relayEndpoint;
         if (config.encryptKey !== undefined) this.encryptKey = config.encryptKey;
-        if (config.testMode !== undefined) this.testMode = Boolean(config.testMode);
+        if (config.testMode !== undefined) this.testMode = config.testMode.toString().toLowerCase() === "true";
     }
 }
 
@@ -431,7 +441,7 @@ export class SchedulerConfig implements ISchedulerConfig {
         this.enable = false;
         this.items = [];
         if (config === undefined) return;
-        if (config.enable !== undefined) this.enable = config.enable;
+        if (config.enable !== undefined) this.enable = config.enable.toString().toLowerCase() === "true";
         if (config.items !== undefined) this.items = config.items;
     }
 
