@@ -85,7 +85,7 @@ contract LoyaltyBridge is LoyaltyBridgeStorage, Initializable, OwnableUpgradeabl
         bytes calldata _signature
     ) external payable override notExistDeposit(_depositId) {
         require(_tokenId == tokenId, "1713");
-        require(_account != foundationAccount, "1052");
+        require(_account != foundationAccount, "1053");
 
         bytes32 dataHash = keccak256(
             abi.encode(
@@ -102,7 +102,7 @@ contract LoyaltyBridge is LoyaltyBridgeStorage, Initializable, OwnableUpgradeabl
         require(_expiry > block.timestamp, "1506");
         require(ledgerContract.tokenBalanceOf(_account) >= _amount, "1511");
         require(_amount % 1 gwei == 0, "1030");
-        require(_amount > fee * 2, "1031");
+        require(_amount >= fee * 2, "1031");
 
         ledgerContract.transferToken(_account, address(this), _amount);
         ledgerContract.increaseNonce(_account);
@@ -121,7 +121,7 @@ contract LoyaltyBridge is LoyaltyBridgeStorage, Initializable, OwnableUpgradeabl
     ) external override onlyValidator(_msgSender()) notConfirmed(_withdrawId, _msgSender()) {
         require(_tokenId == tokenId, "1713");
         require(_amount % 1 gwei == 0, "1030");
-        require(_amount > fee * 2, "1031");
+        require(_amount >= fee * 2, "1031");
 
         if (withdraws[_withdrawId].account == address(0x0)) {
             WithdrawData memory data = WithdrawData({
