@@ -427,6 +427,7 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
 
     /// @notice 브리지를 위한 유동성 자금을 인출합니다.
     function withdrawLiquidity(bytes32 _tokenId, uint256 _amount) external override {
+        require(_msgSender() != foundationAccount, "1053");
         require(_tokenId == tokenId, "1713");
         require(liquidity[_msgSender()] >= _amount, "1514");
         require(tokenBalances[bridgeAddress] >= _amount, "1511");
