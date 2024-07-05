@@ -445,4 +445,16 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         require(_tokenId != tokenId, "1713");
         return liquidity[_account];
     }
+
+    function changeFeeAccount(address _account) external {
+        require(_msgSender() == feeAccount, "1050");
+
+        feeAccount = _account;
+    }
+
+    function changeTxFeeAccount(address _account) external {
+        require(_msgSender() == txFeeAccount, "1050");
+
+        txFeeAccount = _account;
+    }
 }

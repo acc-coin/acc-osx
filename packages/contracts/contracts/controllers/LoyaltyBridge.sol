@@ -36,7 +36,6 @@ contract LoyaltyBridge is LoyaltyBridgeStorage, Initializable, OwnableUpgradeabl
         if (!isSetLedger) {
             ledgerContract = ILedger(_contractAddress);
             foundationAccount = ledgerContract.getFoundationAccount();
-            txFeeAccount = ledgerContract.getTxFeeAccount();
             tokenContract = BIP20DelegatedTransfer(ledgerContract.getTokenAddress());
             tokenId = BridgeLib.getTokenId(tokenContract.name(), tokenContract.symbol());
             isSetLedger = true;
@@ -143,7 +142,7 @@ contract LoyaltyBridge is LoyaltyBridgeStorage, Initializable, OwnableUpgradeabl
             uint256 withdrawalAmount = _amount - fee;
             if (ledgerContract.tokenBalanceOf(address(this)) >= withdraws[_withdrawId].amount) {
                 ledgerContract.transferToken(address(this), _account, withdrawalAmount);
-                ledgerContract.transferToken(address(this), txFeeAccount, fee);
+                ledgerContract.transferToken(address(this), ledgerContract.getTxFeeAccount(), fee);
                 withdraws[_withdrawId].executed = true;
                 emit BridgeWithdrawn(
                     _tokenId,
@@ -164,7 +163,7 @@ contract LoyaltyBridge is LoyaltyBridgeStorage, Initializable, OwnableUpgradeabl
             uint256 withdrawalAmount = withdraws[_withdrawId].amount - fee;
             if (ledgerContract.tokenBalanceOf(address(this)) >= withdraws[_withdrawId].amount) {
                 ledgerContract.transferToken(address(this), withdraws[_withdrawId].account, withdrawalAmount);
-                ledgerContract.transferToken(address(this), txFeeAccount, fee);
+                ledgerContract.transferToken(address(this), ledgerContract.getTxFeeAccount(), fee);
                 withdraws[_withdrawId].executed = true;
                 emit BridgeWithdrawn(
                     tokenId,
@@ -220,7 +219,7 @@ contract LoyaltyBridge is LoyaltyBridgeStorage, Initializable, OwnableUpgradeabl
     }
 
     function getFeeAccount() external view override returns (address) {
-        return txFeeAccount;
+        return ledgerContract.getTxFeeAccount();
     }
 
     function changeFeeAccount(address _feeAccount) external override {

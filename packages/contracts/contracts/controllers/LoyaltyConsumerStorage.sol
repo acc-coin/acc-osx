@@ -36,7 +36,6 @@ contract LoyaltyConsumerStorage {
     }
 
     address internal foundationAccount;
-    address internal feeAccount;
     address internal temporaryAddress;
 
     ICurrencyRate internal currencyRateContract;

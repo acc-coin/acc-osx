@@ -39,7 +39,6 @@ contract LoyaltyTransfer is LoyaltyTransferStorage, Initializable, OwnableUpgrad
         if (!isSetLedger) {
             ledgerContract = ILedger(_contractAddress);
             foundationAccount = ledgerContract.getFoundationAccount();
-            txFeeAccount = ledgerContract.getTxFeeAccount();
             isSetLedger = true;
         }
     }
@@ -66,7 +65,7 @@ contract LoyaltyTransfer is LoyaltyTransferStorage, Initializable, OwnableUpgrad
         require(_amount % 1 gwei == 0, "1030");
 
         ledgerContract.transferToken(_from, _to, _amount);
-        ledgerContract.transferToken(_from, txFeeAccount, fee);
+        ledgerContract.transferToken(_from, ledgerContract.getTxFeeAccount(), fee);
         ledgerContract.increaseNonce(_from);
 
         emit TransferredLoyaltyToken(

@@ -50,7 +50,6 @@ contract LoyaltyConsumer is LoyaltyConsumerStorage, Initializable, OwnableUpgrad
         if (!isSetLedger) {
             ledgerContract = ILedger(_contractAddress);
             foundationAccount = ledgerContract.getFoundationAccount();
-            feeAccount = ledgerContract.getFeeAccount();
             isSetLedger = true;
         }
     }
@@ -140,7 +139,7 @@ contract LoyaltyConsumer is LoyaltyConsumerStorage, Initializable, OwnableUpgrad
             // 재단의 토큰으로 교환해 수수료계좌에 지급한다.
             if (ledgerContract.tokenBalanceOf(foundationAccount) >= loyaltyPayments[_paymentId].feeToken) {
                 ledgerContract.subTokenBalance(foundationAccount, loyaltyPayments[_paymentId].feeToken);
-                ledgerContract.addTokenBalance(feeAccount, loyaltyPayments[_paymentId].feeToken);
+                ledgerContract.addTokenBalance(ledgerContract.getFeeAccount(), loyaltyPayments[_paymentId].feeToken);
             }
             IShop.ShopData memory shop = shopContract.shopOf(loyaltyPayments[_paymentId].shopId);
             if (shop.status == IShop.ShopStatus.ACTIVE) {
@@ -210,8 +209,8 @@ contract LoyaltyConsumer is LoyaltyConsumerStorage, Initializable, OwnableUpgrad
 
         ledgerContract.increaseNonce(shopInfo.account);
 
-        if (ledgerContract.tokenBalanceOf(feeAccount) >= loyaltyPayments[_paymentId].feeToken) {
-            ledgerContract.transferToken(feeAccount, temporaryAddress, loyaltyPayments[_paymentId].feeToken);
+        if (ledgerContract.tokenBalanceOf(ledgerContract.getFeeAccount()) >= loyaltyPayments[_paymentId].feeToken) {
+            ledgerContract.transferToken(ledgerContract.getFeeAccount(), temporaryAddress, loyaltyPayments[_paymentId].feeToken);
             ledgerContract.addPointBalance(
                 temporaryAddress,
                 loyaltyPayments[_paymentId].paidPoint + loyaltyPayments[_paymentId].feePoint
@@ -252,7 +251,7 @@ contract LoyaltyConsumer is LoyaltyConsumerStorage, Initializable, OwnableUpgrad
             loyaltyPayments[_paymentId].status = LoyaltyPaymentStatus.CLOSED_CANCEL;
             emit LoyaltyPaymentEvent(loyaltyPayments[_paymentId], balance);
         } else {
-            ledgerContract.transferToken(temporaryAddress, feeAccount, loyaltyPayments[_paymentId].feeToken);
+            ledgerContract.transferToken(temporaryAddress, ledgerContract.getFeeAccount(), loyaltyPayments[_paymentId].feeToken);
             ledgerContract.subPointBalance(
                 temporaryAddress,
                 loyaltyPayments[_paymentId].paidPoint + loyaltyPayments[_paymentId].feePoint
