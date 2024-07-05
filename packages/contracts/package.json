@@ -69,7 +69,7 @@
         "@openzeppelin/contracts": "^4.9.5",
         "@openzeppelin/contracts-upgradeable": "^4.9.5",
         "@openzeppelin/hardhat-upgrades": "^1.28.0",
-        "acc-bridge-contracts-v2": "~2.0.0",
+        "acc-bridge-contracts-v2": "~2.1.0",
         "loyalty-tokens": "~2.0.0",
         "multisig-wallet-contracts": "~2.0.0"
     }

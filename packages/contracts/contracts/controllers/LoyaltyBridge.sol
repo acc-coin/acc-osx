@@ -14,6 +14,8 @@ import "acc-bridge-contracts-v2/contracts/interfaces/IBridge.sol";
 import "acc-bridge-contracts-v2/contracts/interfaces/IBridgeValidator.sol";
 import "acc-bridge-contracts-v2/contracts/lib/BridgeLib.sol";
 
+import "../lib/DMS.sol";
+
 import "../interfaces/ILedger.sol";
 import "./LoyaltyBridgeStorage.sol";
 
@@ -22,7 +24,7 @@ contract LoyaltyBridge is LoyaltyBridgeStorage, Initializable, OwnableUpgradeabl
         __UUPSUpgradeable_init();
         __Ownable_init_unchained();
 
-        fee = 5e18;
+        fee = 1e17;
         validatorContract = IBridgeValidator(_validatorAddress);
 
         isSetLedger = false;
@@ -102,7 +104,7 @@ contract LoyaltyBridge is LoyaltyBridgeStorage, Initializable, OwnableUpgradeabl
         require(_expiry > block.timestamp, "1506");
         require(ledgerContract.tokenBalanceOf(_account) >= _amount, "1511");
         require(_amount % 1 gwei == 0, "1030");
-        require(_amount >= fee * 2, "1031");
+        require(_amount > fee, "1031");
 
         ledgerContract.transferToken(_account, address(this), _amount);
         ledgerContract.increaseNonce(_account);
@@ -121,7 +123,7 @@ contract LoyaltyBridge is LoyaltyBridgeStorage, Initializable, OwnableUpgradeabl
     ) external override onlyValidator(_msgSender()) notConfirmed(_withdrawId, _msgSender()) {
         require(_tokenId == tokenId, "1713");
         require(_amount % 1 gwei == 0, "1030");
-        require(_amount >= fee * 2, "1031");
+        require(_amount > fee, "1031");
 
         if (withdraws[_withdrawId].account == address(0x0)) {
             WithdrawData memory data = WithdrawData({
@@ -213,7 +215,15 @@ contract LoyaltyBridge is LoyaltyBridgeStorage, Initializable, OwnableUpgradeabl
     function changeFee(bytes32 _tokenId, uint256 _fee) external override {
         require(_tokenId == tokenId, "1713");
         require(_msgSender() == owner(), "1050");
+        require(_fee <= DMS.TOKEN_MAX_FEE, "1714");
         fee = _fee;
+    }
+
+    function getFeeAccount() external view override returns (address) {
+        return txFeeAccount;
+    }
+
+    function changeFeeAccount(address _feeAccount) external override {
     }
 
     /// @notice 전체 유동성 자금을 조회합니다.

@@ -56,7 +56,7 @@ describe("Test for Ledger", () => {
 
     let tokenId: string;
     let amount = Amount.make(100_000, 18).value;
-    const fee = Amount.make(5, 18).value;
+    const fee = Amount.make(0.1, 18).value;
 
     const addShopData = async (shopData: IShopData[]) => {
         for (const elem of shopData) {

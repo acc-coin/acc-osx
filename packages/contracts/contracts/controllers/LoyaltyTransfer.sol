@@ -8,6 +8,8 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
+import "../lib/DMS.sol";
+
 import "../interfaces/ILedger.sol";
 import "./LoyaltyTransferStorage.sol";
 
@@ -26,7 +28,7 @@ contract LoyaltyTransfer is LoyaltyTransferStorage, Initializable, OwnableUpgrad
         __UUPSUpgradeable_init();
         __Ownable_init_unchained();
 
-        fee = 1e16;
+        fee = 1e17;
 
         isSetLedger = false;
     }
@@ -83,6 +85,7 @@ contract LoyaltyTransfer is LoyaltyTransferStorage, Initializable, OwnableUpgrad
 
     function changeFee(uint256 _fee) external {
         require(_msgSender() == owner(), "1050");
+        require(_fee <= DMS.TOKEN_MAX_FEE, "1714");
         fee = _fee;
     }
 }
