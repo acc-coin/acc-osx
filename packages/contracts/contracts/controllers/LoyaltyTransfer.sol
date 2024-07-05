@@ -28,7 +28,7 @@ contract LoyaltyTransfer is LoyaltyTransferStorage, Initializable, OwnableUpgrad
         __UUPSUpgradeable_init();
         __Ownable_init_unchained();
 
-        fee = 1e17;
+        protocolFee = DMS.TOKEN_DEFAULT_PROTOCOL_FEE;
 
         isSetLedger = false;
     }
@@ -61,30 +61,30 @@ contract LoyaltyTransfer is LoyaltyTransferStorage, Initializable, OwnableUpgrad
         );
         require(ECDSA.recover(ECDSA.toEthSignedMessageHash(dataHash), _signature) == _from, "1501");
         require(_expiry > block.timestamp, "1506");
-        require(ledgerContract.tokenBalanceOf(_from) >= _amount + fee, "1511");
+        require(ledgerContract.tokenBalanceOf(_from) >= _amount + protocolFee, "1511");
         require(_amount % 1 gwei == 0, "1030");
 
         ledgerContract.transferToken(_from, _to, _amount);
-        ledgerContract.transferToken(_from, ledgerContract.getTxFeeAccount(), fee);
+        ledgerContract.transferToken(_from, ledgerContract.getProtocolFeeAccount(), protocolFee);
         ledgerContract.increaseNonce(_from);
 
         emit TransferredLoyaltyToken(
             _from,
             _to,
             _amount,
-            fee,
+            protocolFee,
             ledgerContract.tokenBalanceOf(_from),
             ledgerContract.tokenBalanceOf(_to)
         );
     }
 
-    function getFee() external view returns (uint256) {
-        return fee;
+    function getProtocolFee() external view returns (uint256) {
+        return protocolFee;
     }
 
-    function changeFee(uint256 _fee) external {
+    function changeProtocolFee(uint256 _protocolFee) external {
         require(_msgSender() == owner(), "1050");
-        require(_fee <= DMS.TOKEN_MAX_FEE, "1714");
-        fee = _fee;
+        require(_protocolFee <= DMS.TOKEN_MAX_PROTOCOL_FEE, "1714");
+        protocolFee = _protocolFee;
     }
 }

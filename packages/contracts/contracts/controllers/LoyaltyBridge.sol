@@ -24,7 +24,7 @@ contract LoyaltyBridge is LoyaltyBridgeStorage, Initializable, OwnableUpgradeabl
         __UUPSUpgradeable_init();
         __Ownable_init_unchained();
 
-        fee = 1e17;
+        protocolFee = DMS.TOKEN_DEFAULT_PROTOCOL_FEE;
         validatorContract = IBridgeValidator(_validatorAddress);
 
         isSetLedger = false;
@@ -103,7 +103,7 @@ contract LoyaltyBridge is LoyaltyBridgeStorage, Initializable, OwnableUpgradeabl
         require(_expiry > block.timestamp, "1506");
         require(ledgerContract.tokenBalanceOf(_account) >= _amount, "1511");
         require(_amount % 1 gwei == 0, "1030");
-        require(_amount > fee, "1031");
+        require(_amount > protocolFee, "1031");
 
         ledgerContract.transferToken(_account, address(this), _amount);
         ledgerContract.increaseNonce(_account);
@@ -122,7 +122,7 @@ contract LoyaltyBridge is LoyaltyBridgeStorage, Initializable, OwnableUpgradeabl
     ) external override onlyValidator(_msgSender()) notConfirmed(_withdrawId, _msgSender()) {
         require(_tokenId == tokenId, "1713");
         require(_amount % 1 gwei == 0, "1030");
-        require(_amount > fee, "1031");
+        require(_amount > protocolFee, "1031");
 
         if (withdraws[_withdrawId].account == address(0x0)) {
             WithdrawData memory data = WithdrawData({
@@ -139,10 +139,10 @@ contract LoyaltyBridge is LoyaltyBridgeStorage, Initializable, OwnableUpgradeabl
         confirmations[_withdrawId][_msgSender()] = true;
 
         if (!withdraws[_withdrawId].executed && _isConfirmed(_withdrawId)) {
-            uint256 withdrawalAmount = _amount - fee;
+            uint256 withdrawalAmount = _amount - protocolFee;
             if (ledgerContract.tokenBalanceOf(address(this)) >= withdraws[_withdrawId].amount) {
                 ledgerContract.transferToken(address(this), _account, withdrawalAmount);
-                ledgerContract.transferToken(address(this), ledgerContract.getTxFeeAccount(), fee);
+                ledgerContract.transferToken(address(this), ledgerContract.getProtocolFeeAccount(), protocolFee);
                 withdraws[_withdrawId].executed = true;
                 emit BridgeWithdrawn(
                     _tokenId,
@@ -160,10 +160,10 @@ contract LoyaltyBridge is LoyaltyBridgeStorage, Initializable, OwnableUpgradeabl
         bytes32 _withdrawId
     ) external override onlyValidator(_msgSender()) existWithdraw(_withdrawId) {
         if (!withdraws[_withdrawId].executed && _isConfirmed(_withdrawId)) {
-            uint256 withdrawalAmount = withdraws[_withdrawId].amount - fee;
+            uint256 withdrawalAmount = withdraws[_withdrawId].amount - protocolFee;
             if (ledgerContract.tokenBalanceOf(address(this)) >= withdraws[_withdrawId].amount) {
                 ledgerContract.transferToken(address(this), withdraws[_withdrawId].account, withdrawalAmount);
-                ledgerContract.transferToken(address(this), ledgerContract.getTxFeeAccount(), fee);
+                ledgerContract.transferToken(address(this), ledgerContract.getProtocolFeeAccount(), protocolFee);
                 withdraws[_withdrawId].executed = true;
                 emit BridgeWithdrawn(
                     tokenId,
@@ -207,22 +207,15 @@ contract LoyaltyBridge is LoyaltyBridgeStorage, Initializable, OwnableUpgradeabl
         return withdraws[_withdrawId];
     }
 
-    function getFee(bytes32 _tokenId) external view override returns (uint256) {
-        return fee;
+    function getProtocolFee(bytes32 _tokenId) external view override returns (uint256) {
+        return protocolFee;
     }
 
-    function changeFee(bytes32 _tokenId, uint256 _fee) external override {
+    function changeProtocolFee(bytes32 _tokenId, uint256 _protocolFee) external override {
         require(_tokenId == tokenId, "1713");
         require(_msgSender() == owner(), "1050");
-        require(_fee <= DMS.TOKEN_MAX_FEE, "1714");
-        fee = _fee;
-    }
-
-    function getFeeAccount() external view override returns (address) {
-        return ledgerContract.getTxFeeAccount();
-    }
-
-    function changeFeeAccount(address _feeAccount) external override {
+        require(_protocolFee <= DMS.TOKEN_MAX_PROTOCOL_FEE, "1714");
+        protocolFee = _protocolFee;
     }
 
     /// @notice 전체 유동성 자금을 조회합니다.

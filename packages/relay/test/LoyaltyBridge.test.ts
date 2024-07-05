@@ -154,7 +154,7 @@ describe("Test of LoyaltyBridge", function () {
             await contractManager.mainTokenContract.balanceOf(contractManager.mainLoyaltyBridgeContract.address)
         ).to.deep.equal(balance1.add(amount));
 
-        const fee = await contractManager.sideLoyaltyBridgeContract.getFee(tokenId);
+        const fee = await contractManager.sideLoyaltyBridgeContract.getProtocolFee(tokenId);
         expect(await contractManager.sideLedgerContract.tokenBalanceOf(account.address)).to.deep.equal(
             balance2.add(amount).sub(fee)
         );
@@ -214,7 +214,7 @@ describe("Test of LoyaltyBridge", function () {
             .withdrawFromBridge(response.data.data.tokenId, response.data.data.depositId, account.address, amount);
         ///
 
-        const fee = await contractManager.mainLoyaltyBridgeContract.getFee(tokenId);
+        const fee = await contractManager.mainLoyaltyBridgeContract.getProtocolFee(tokenId);
         expect(await contractManager.mainTokenContract.balanceOf(account.address)).to.deep.equal(
             balance0.add(amount).sub(fee)
         );

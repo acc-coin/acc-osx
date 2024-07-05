@@ -112,7 +112,7 @@ describe("Test of Bridge", function () {
 
         const nonce = await contractManager.mainTokenContract.nonceOf(account.address);
         const expiry = ContractUtils.getTimeStamp() * 600;
-        const message = await ContractUtils.getTransferMessage(
+        const message = ContractUtils.getTransferMessage(
             contractManager.mainChainId,
             contractManager.mainTokenContract.address,
             account.address,
@@ -154,7 +154,7 @@ describe("Test of Bridge", function () {
             await contractManager.mainTokenContract.balanceOf(contractManager.mainChainBridgeContract.address)
         ).to.deep.equal(balance1.add(amount));
 
-        const fee = await contractManager.sideChainBridgeContract.getFee(tokenId);
+        const fee = await contractManager.sideChainBridgeContract.getProtocolFee(tokenId);
         expect(await contractManager.sideTokenContract.balanceOf(account.address)).to.deep.equal(
             balance2.add(amount).sub(fee)
         );
@@ -177,7 +177,7 @@ describe("Test of Bridge", function () {
 
         const nonce = await contractManager.sideTokenContract.nonceOf(account.address);
         const expiry = ContractUtils.getTimeStamp() * 600;
-        const message = await ContractUtils.getTransferMessage(
+        const message = ContractUtils.getTransferMessage(
             contractManager.sideChainId,
             contractManager.sideTokenContract.address,
             account.address,
@@ -214,7 +214,7 @@ describe("Test of Bridge", function () {
             .withdrawFromBridge(response.data.data.tokenId, response.data.data.depositId, account.address, amount);
         ///
 
-        const fee = await contractManager.mainChainBridgeContract.getFee(tokenId);
+        const fee = await contractManager.mainChainBridgeContract.getProtocolFee(tokenId);
         expect(await contractManager.mainTokenContract.balanceOf(account.address)).to.deep.equal(
             balance0.add(amount).sub(fee)
         );

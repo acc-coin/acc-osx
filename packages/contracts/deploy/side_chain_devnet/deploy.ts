@@ -53,7 +53,7 @@ interface IAccount {
     owner: Wallet;
     foundation: Wallet;
     fee: Wallet;
-    txFee: Wallet;
+    protocolFee: Wallet;
     validators: Wallet[];
     linkValidators: Wallet[];
     bridgeValidators: Wallet[];
@@ -84,7 +84,7 @@ class Deployments {
             owner,
             foundation,
             fee,
-            txFee,
+            protocolFee,
             validator01,
             validator02,
             validator03,
@@ -127,7 +127,7 @@ class Deployments {
             owner,
             foundation,
             fee,
-            txFee,
+            protocolFee,
             validators: [
                 validator01,
                 validator02,
@@ -728,7 +728,7 @@ async function deployLedger(accounts: IAccount, deployment: Deployments) {
             {
                 foundation: accounts.foundation.address,
                 fee: accounts.fee.address,
-                txFee: accounts.txFee.address,
+                protocolFee: accounts.protocolFee.address,
             },
             {
                 token: deployment.getContractAddress("LoyaltyToken"),
@@ -915,7 +915,7 @@ async function deploySideChainBridge(accounts: IAccount, deployment: Deployments
     const factory = await hre.ethers.getContractFactory("Bridge");
     const contract = (await hre.upgrades.deployProxy(
         factory.connect(accounts.deployer),
-        [deployment.getContractAddress("BridgeValidator"), accounts.txFee.address],
+        [deployment.getContractAddress("BridgeValidator"), accounts.protocolFee.address],
         {
             initializer: "initialize",
             kind: "uups",

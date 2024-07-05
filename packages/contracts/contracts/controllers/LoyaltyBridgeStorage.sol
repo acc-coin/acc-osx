@@ -16,7 +16,7 @@ contract LoyaltyBridgeStorage {
 
     address internal foundationAccount;
 
-    uint256 internal fee;
+    uint256 internal protocolFee;
 
     bool internal isSetLedger;
     ILedger internal ledgerContract;

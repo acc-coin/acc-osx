@@ -61,7 +61,7 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
     struct ManagementAddresses {
         address foundation;
         address fee;
-        address txFee;
+        address protocolFee;
     }
 
     struct ContractAddresses {
@@ -87,7 +87,7 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
 
         foundationAccount = managements.foundation;
         feeAccount = managements.fee;
-        txFeeAccount = managements.txFee;
+        protocolFeeAccount = managements.protocolFee;
 
         providerAddress = contracts.provider;
         consumerAddress = contracts.consumer;
@@ -101,7 +101,7 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         tokenContract = IBIP20DelegatedTransfer(contracts.token);
         linkContract = IPhoneLinkCollection(contracts.phoneLink);
         currencyRateContract = ICurrencyRate(contracts.currencyRate);
-        fee = MAX_FEE;
+        fee = MAX_PAYMENT_FEE;
         BIP20DelegatedTransfer token = BIP20DelegatedTransfer(contracts.token);
         tokenId = BridgeLib.getTokenId(token.name(), token.symbol());
 
@@ -353,7 +353,7 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
     /// @notice 포인트와 토큰의 사용수수료률을 설정합니다. 5%를 초과한 값은 설정할 수 없습니다.
     /// @param _fee % 단위 입니다.
     function setFee(uint32 _fee) external override {
-        require(_fee <= MAX_FEE, "1521");
+        require(_fee <= MAX_PAYMENT_FEE, "1521");
         require(_msgSender() == feeAccount, "1050");
         fee = _fee;
     }
@@ -378,8 +378,8 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         return feeAccount;
     }
 
-    function getTxFeeAccount() external view override returns (address) {
-        return txFeeAccount;
+    function getProtocolFeeAccount() external view override returns (address) {
+        return protocolFeeAccount;
     }
 
     function getTokenAddress() external view override returns (address) {
@@ -452,9 +452,9 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         feeAccount = _account;
     }
 
-    function changeTxFeeAccount(address _account) external {
-        require(_msgSender() == txFeeAccount, "1050");
+    function changeProtocolFeeAccount(address _account) external {
+        require(_msgSender() == protocolFeeAccount, "1050");
 
-        txFeeAccount = _account;
+        protocolFeeAccount = _account;
     }
 }

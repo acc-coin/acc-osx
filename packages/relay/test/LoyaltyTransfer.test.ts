@@ -124,7 +124,7 @@ describe("Test of LoyaltyTransfer", function () {
         const target = deployments.accounts.users[1];
         const balance0 = await contractManager.sideLedgerContract.tokenBalanceOf(source.address);
         const balance1 = await contractManager.sideLedgerContract.tokenBalanceOf(target.address);
-        const fee = await contractManager.sideLoyaltyTransferContract.getFee();
+        const fee = await contractManager.sideLoyaltyTransferContract.getProtocolFee();
         const amount = Amount.make(500, 18).value;
         const nonce = await contractManager.sideLedgerContract.nonceOf(source.address);
         const expiry = ContractUtils.getTimeStamp() * 600;

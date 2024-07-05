@@ -356,7 +356,7 @@ export class TokenRouter {
                         ensAddress: AddressZero,
                         transferFee: "0",
                         bridgeFee: (
-                            await this.contractManager.mainLoyaltyBridgeContract.getFee(
+                            await this.contractManager.mainLoyaltyBridgeContract.getProtocolFee(
                                 this.contractManager.mainTokenId
                             )
                         ).toString(),
@@ -392,9 +392,11 @@ export class TokenRouter {
                         name: "side-chain",
                         chainId: this.contractManager.sideChainId,
                         ensAddress: AddressZero,
-                        transferFee: (await this.contractManager.sideLoyaltyTransferContract.getFee()).toString(),
+                        transferFee: (
+                            await this.contractManager.sideLoyaltyTransferContract.getProtocolFee()
+                        ).toString(),
                         bridgeFee: (
-                            await this.contractManager.sideLoyaltyBridgeContract.getFee(
+                            await this.contractManager.sideLoyaltyBridgeContract.getProtocolFee(
                                 this.contractManager.sideTokenId
                             )
                         ).toString(),

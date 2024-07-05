@@ -10,7 +10,7 @@ import "../interfaces/ILedger.sol";
 
 contract LedgerStorage {
     /// @notice Hash value of a blank string
-    uint32 public constant MAX_FEE = 500;
+    uint32 public constant MAX_PAYMENT_FEE = 500;
 
     mapping(bytes32 => uint256) internal unPayablePointBalances;
     mapping(address => uint256) internal pointBalances;
@@ -20,7 +20,7 @@ contract LedgerStorage {
 
     address public foundationAccount;
     address public feeAccount;
-    address public txFeeAccount;
+    address public protocolFeeAccount;
     address public providerAddress;
     address public consumerAddress;
     address public exchangerAddress;

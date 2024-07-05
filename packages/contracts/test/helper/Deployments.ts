@@ -47,7 +47,7 @@ export interface IAccount {
     owner: Wallet;
     foundation: Wallet;
     fee: Wallet;
-    txFee: Wallet;
+    protocolFee: Wallet;
     validators: Wallet[];
     linkValidators: Wallet[];
     bridgeValidators: Wallet[];
@@ -76,7 +76,7 @@ export class Deployments {
             owner,
             foundation,
             fee,
-            txFee,
+            protocolFee,
             validator01,
             validator02,
             validator03,
@@ -141,7 +141,7 @@ export class Deployments {
             owner,
             foundation,
             fee,
-            txFee,
+            protocolFee,
             validators: [validator01, validator02, validator03],
             linkValidators: [linkValidator1, linkValidator2, linkValidator3],
             bridgeValidators: [bridgeValidator1, bridgeValidator2, bridgeValidator3],
@@ -607,7 +607,7 @@ async function deployBridge(accounts: IAccount, deployment: Deployments) {
     const factory = await ethers.getContractFactory("Bridge");
     const contract = (await upgrades.deployProxy(
         factory.connect(accounts.deployer),
-        [deployment.getContractAddress("BridgeValidator"), accounts.txFee.address],
+        [deployment.getContractAddress("BridgeValidator"), accounts.protocolFee.address],
         {
             initializer: "initialize",
             kind: "uups",
@@ -748,7 +748,7 @@ async function deployLedger(accounts: IAccount, deployment: Deployments) {
             {
                 foundation: accounts.foundation.address,
                 fee: accounts.fee.address,
-                txFee: accounts.txFee.address,
+                protocolFee: accounts.protocolFee.address,
             },
             {
                 token: deployment.getContractAddress("TestLYT"),

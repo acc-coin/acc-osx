@@ -2507,7 +2507,7 @@ describe("Test for Ledger", () => {
         });
 
         it("Transfer token", async () => {
-            const fee = await transferContract.getFee();
+            const fee = await transferContract.getProtocolFee();
             const oldTokenBalance0 = await ledgerContract.tokenBalanceOf(deployments.accounts.users[0].address);
             const oldTokenBalance1 = await ledgerContract.tokenBalanceOf(deployments.accounts.users[1].address);
             const transferAmount = oldTokenBalance0.sub(fee);

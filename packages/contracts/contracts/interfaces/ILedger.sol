@@ -61,7 +61,7 @@ interface ILedger {
 
     function getFeeAccount() external view returns (address);
 
-    function getTxFeeAccount() external view returns (address);
+    function getProtocolFeeAccount() external view returns (address);
 
     function getTokenAddress() external view returns (address);
 

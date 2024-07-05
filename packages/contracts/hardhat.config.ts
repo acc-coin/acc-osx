@@ -75,11 +75,15 @@ function getAccounts() {
         accounts.push(process.env.FEE);
     }
 
-    if (process.env.TXFEE !== undefined && process.env.TXFEE.trim() !== "" && reg_bytes64.test(process.env.TXFEE)) {
-        accounts.push(process.env.TXFEE);
+    if (
+        process.env.PROTOCOL_FEE !== undefined &&
+        process.env.PROTOCOL_FEE.trim() !== "" &&
+        reg_bytes64.test(process.env.PROTOCOL_FEE)
+    ) {
+        accounts.push(process.env.PROTOCOL_FEE);
     } else {
-        process.env.TXFEE = Wallet.createRandom().privateKey;
-        accounts.push(process.env.TXFEE);
+        process.env.PROTOCOL_FEE = Wallet.createRandom().privateKey;
+        accounts.push(process.env.PROTOCOL_FEE);
     }
 
     if (
