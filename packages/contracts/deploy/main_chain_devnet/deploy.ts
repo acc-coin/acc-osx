@@ -35,7 +35,7 @@ interface IAccount {
     deployer: Wallet;
     owner: Wallet;
     foundation: Wallet;
-    fee: Wallet;
+    paymentFee: Wallet;
     protocolFee: Wallet;
     validators: Wallet[];
     linkValidators: Wallet[];
@@ -64,7 +64,7 @@ class Deployments {
             deployer_main_chain,
             owner,
             foundation,
-            fee,
+            paymentFee,
             protocolFee,
             validator01,
             validator02,
@@ -109,7 +109,7 @@ class Deployments {
             deployer: deployer_main_chain,
             owner,
             foundation,
-            fee,
+            paymentFee,
             protocolFee,
             validators: [
                 validator01,

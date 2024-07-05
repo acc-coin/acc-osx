@@ -95,7 +95,7 @@ contract LoyaltyConsumer is LoyaltyConsumerStorage, Initializable, OwnableUpgrad
     function _openNewLoyaltyPaymentPoint(LoyaltyPaymentInputData memory data) internal {
         uint256 paidPoint = currencyRateContract.convertCurrencyToPoint(data.amount, data.currency);
         uint256 paidToken = currencyRateContract.convertPointToToken(paidPoint);
-        uint256 feeValue = DMS.zeroGWEI((data.amount * ledgerContract.getFee()) / 10000);
+        uint256 feeValue = DMS.zeroGWEI((data.amount * ledgerContract.getPaymentFee()) / 10000);
         uint256 feePoint = currencyRateContract.convertCurrencyToPoint(feeValue, data.currency);
         uint256 feeToken = currencyRateContract.convertPointToToken(feePoint);
 
@@ -139,7 +139,7 @@ contract LoyaltyConsumer is LoyaltyConsumerStorage, Initializable, OwnableUpgrad
             // 재단의 토큰으로 교환해 수수료계좌에 지급한다.
             if (ledgerContract.tokenBalanceOf(foundationAccount) >= loyaltyPayments[_paymentId].feeToken) {
                 ledgerContract.subTokenBalance(foundationAccount, loyaltyPayments[_paymentId].feeToken);
-                ledgerContract.addTokenBalance(ledgerContract.getFeeAccount(), loyaltyPayments[_paymentId].feeToken);
+                ledgerContract.addTokenBalance(ledgerContract.getPaymentFeeAccount(), loyaltyPayments[_paymentId].feeToken);
             }
             IShop.ShopData memory shop = shopContract.shopOf(loyaltyPayments[_paymentId].shopId);
             if (shop.status == IShop.ShopStatus.ACTIVE) {
@@ -209,8 +209,8 @@ contract LoyaltyConsumer is LoyaltyConsumerStorage, Initializable, OwnableUpgrad
 
         ledgerContract.increaseNonce(shopInfo.account);
 
-        if (ledgerContract.tokenBalanceOf(ledgerContract.getFeeAccount()) >= loyaltyPayments[_paymentId].feeToken) {
-            ledgerContract.transferToken(ledgerContract.getFeeAccount(), temporaryAddress, loyaltyPayments[_paymentId].feeToken);
+        if (ledgerContract.tokenBalanceOf(ledgerContract.getPaymentFeeAccount()) >= loyaltyPayments[_paymentId].feeToken) {
+            ledgerContract.transferToken(ledgerContract.getPaymentFeeAccount(), temporaryAddress, loyaltyPayments[_paymentId].feeToken);
             ledgerContract.addPointBalance(
                 temporaryAddress,
                 loyaltyPayments[_paymentId].paidPoint + loyaltyPayments[_paymentId].feePoint
@@ -251,7 +251,7 @@ contract LoyaltyConsumer is LoyaltyConsumerStorage, Initializable, OwnableUpgrad
             loyaltyPayments[_paymentId].status = LoyaltyPaymentStatus.CLOSED_CANCEL;
             emit LoyaltyPaymentEvent(loyaltyPayments[_paymentId], balance);
         } else {
-            ledgerContract.transferToken(temporaryAddress, ledgerContract.getFeeAccount(), loyaltyPayments[_paymentId].feeToken);
+            ledgerContract.transferToken(temporaryAddress, ledgerContract.getPaymentFeeAccount(), loyaltyPayments[_paymentId].feeToken);
             ledgerContract.subPointBalance(
                 temporaryAddress,
                 loyaltyPayments[_paymentId].paidPoint + loyaltyPayments[_paymentId].feePoint

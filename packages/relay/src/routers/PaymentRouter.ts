@@ -377,7 +377,7 @@ export class PaymentRouter {
             const amount: BigNumber = BigNumber.from(req.query.amount);
             const currency: string = String(req.query.currency).trim().toLowerCase();
 
-            const feeRate = await this.contractManager.sideLedgerContract.getFee();
+            const feeRate = await this.contractManager.sideLedgerContract.getPaymentFee();
             const rate = await this.contractManager.sideCurrencyRateContract.get(currency.toLowerCase());
             const multiple = await this.contractManager.sideCurrencyRateContract.multiple();
 
@@ -460,7 +460,7 @@ export class PaymentRouter {
             const currency: string = String(req.body.currency).trim();
             const shopId: string = String(req.body.shopId).trim();
 
-            const feeRate = await this.contractManager.sideLedgerContract.getFee();
+            const feeRate = await this.contractManager.sideLedgerContract.getPaymentFee();
             const rate = await this.contractManager.sideCurrencyRateContract.get(currency.toLowerCase());
             const multiple = await this.contractManager.sideCurrencyRateContract.multiple();
 

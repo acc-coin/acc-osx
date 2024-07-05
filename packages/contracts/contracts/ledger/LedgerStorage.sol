@@ -19,7 +19,7 @@ contract LedgerStorage {
     mapping(address => uint256) internal liquidity;
 
     address public foundationAccount;
-    address public feeAccount;
+    address public paymentFeeAccount;
     address public protocolFeeAccount;
     address public providerAddress;
     address public consumerAddress;
@@ -30,7 +30,7 @@ contract LedgerStorage {
     address public tokenAddress;
     address public shopAddress;
 
-    uint32 internal fee;
+    uint32 internal paymentFee;
     address internal temporaryAddress;
 
     IPhoneLinkCollection internal linkContract;

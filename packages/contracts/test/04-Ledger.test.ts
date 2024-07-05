@@ -1116,9 +1116,11 @@ describe("Test for Ledger", () => {
                     shop.shopId,
                     nonce
                 );
-                const feeAmount = ContractUtils.zeroGWEI(purchaseAmount.mul(await ledgerContract.getFee()).div(10000));
+                const feeAmount = ContractUtils.zeroGWEI(
+                    purchaseAmount.mul(await ledgerContract.getPaymentFee()).div(10000)
+                );
                 const feeToken = ContractUtils.zeroGWEI(feeAmount.mul(multiple).div(price));
-                const oldFeeBalance = await ledgerContract.tokenBalanceOf(deployments.accounts.fee.address);
+                const oldFeeBalance = await ledgerContract.tokenBalanceOf(deployments.accounts.paymentFee.address);
 
                 [secret, secretLock] = ContractUtils.getSecret();
                 await expect(
@@ -1151,7 +1153,7 @@ describe("Test for Ledger", () => {
                         .closeNewLoyaltyPayment(paymentId, secret, true)
                 ).to.emit(consumerContract, "LoyaltyPaymentEvent");
 
-                const newFeeBalance = await ledgerContract.tokenBalanceOf(deployments.accounts.fee.address);
+                const newFeeBalance = await ledgerContract.tokenBalanceOf(deployments.accounts.paymentFee.address);
                 expect(newFeeBalance).to.deep.equal(oldFeeBalance.add(feeToken));
             });
         });

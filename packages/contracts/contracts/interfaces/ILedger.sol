@@ -53,13 +53,13 @@ interface ILedger {
 
     function increaseNonce(address _account) external;
 
-    function setFee(uint32 _fee) external;
+    function setPaymentFee(uint32 _fee) external;
 
-    function getFee() external view returns (uint32);
+    function getPaymentFee() external view returns (uint32);
 
     function getFoundationAccount() external view returns (address);
 
-    function getFeeAccount() external view returns (address);
+    function getPaymentFeeAccount() external view returns (address);
 
     function getProtocolFeeAccount() external view returns (address);
 

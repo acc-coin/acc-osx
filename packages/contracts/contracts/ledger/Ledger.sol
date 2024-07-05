@@ -60,7 +60,7 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
 
     struct ManagementAddresses {
         address foundation;
-        address fee;
+        address paymentFee;
         address protocolFee;
     }
 
@@ -86,7 +86,7 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         __Ownable_init_unchained();
 
         foundationAccount = managements.foundation;
-        feeAccount = managements.fee;
+        paymentFeeAccount = managements.paymentFee;
         protocolFeeAccount = managements.protocolFee;
 
         providerAddress = contracts.provider;
@@ -101,7 +101,7 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         tokenContract = IBIP20DelegatedTransfer(contracts.token);
         linkContract = IPhoneLinkCollection(contracts.phoneLink);
         currencyRateContract = ICurrencyRate(contracts.currencyRate);
-        fee = MAX_PAYMENT_FEE;
+        paymentFee = MAX_PAYMENT_FEE;
         BIP20DelegatedTransfer token = BIP20DelegatedTransfer(contracts.token);
         tokenId = BridgeLib.getTokenId(token.name(), token.symbol());
 
@@ -352,15 +352,15 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
 
     /// @notice 포인트와 토큰의 사용수수료률을 설정합니다. 5%를 초과한 값은 설정할 수 없습니다.
     /// @param _fee % 단위 입니다.
-    function setFee(uint32 _fee) external override {
+    function setPaymentFee(uint32 _fee) external override {
         require(_fee <= MAX_PAYMENT_FEE, "1521");
-        require(_msgSender() == feeAccount, "1050");
-        fee = _fee;
+        require(_msgSender() == paymentFeeAccount, "1050");
+        paymentFee = _fee;
     }
 
     /// @notice 포인트와 토큰의 사용수수료률을 리턴합니다.
-    function getFee() external view override returns (uint32) {
-        return fee;
+    function getPaymentFee() external view override returns (uint32) {
+        return paymentFee;
     }
 
     /// @notice 사용가능한 포인트로 전환합니다.
@@ -374,8 +374,8 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         return foundationAccount;
     }
 
-    function getFeeAccount() external view override returns (address) {
-        return feeAccount;
+    function getPaymentFeeAccount() external view override returns (address) {
+        return paymentFeeAccount;
     }
 
     function getProtocolFeeAccount() external view override returns (address) {
@@ -447,9 +447,9 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
     }
 
     function changeFeeAccount(address _account) external {
-        require(_msgSender() == feeAccount, "1050");
+        require(_msgSender() == paymentFeeAccount, "1050");
 
-        feeAccount = _account;
+        paymentFeeAccount = _account;
     }
 
     function changeProtocolFeeAccount(address _account) external {
