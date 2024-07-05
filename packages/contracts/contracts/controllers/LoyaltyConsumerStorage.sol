@@ -35,7 +35,7 @@ contract LoyaltyConsumerStorage {
         LoyaltyPaymentStatus status;
     }
 
-    address internal foundationAccount;
+    address internal systemAccount;
     address internal temporaryAddress;
 
     ICurrencyRate internal currencyRateContract;

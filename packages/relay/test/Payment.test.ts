@@ -273,7 +273,7 @@ describe("Test of Server", function () {
                     shopId: shop.shopId,
                     account: userAccount,
                     phone: phoneHash,
-                    sender: deployments.accounts.foundation.address,
+                    sender: deployments.accounts.system.address,
                 };
                 const purchaseMessage = ContractUtils.getPurchasesMessage(
                     0,
@@ -746,7 +746,7 @@ describe("Test of Server", function () {
                     shopId: shop.shopId,
                     account: userAccount,
                     phone: phoneHash,
-                    sender: deployments.accounts.foundation.address,
+                    sender: deployments.accounts.system.address,
                 };
                 const purchaseMessage = ContractUtils.getPurchasesMessage(
                     0,
@@ -1146,7 +1146,7 @@ describe("Test of Server", function () {
                     shopId: shop.shopId,
                     account: userAccount,
                     phone: phoneHash,
-                    sender: deployments.accounts.foundation.address,
+                    sender: deployments.accounts.system.address,
                 };
                 const purchaseMessage = ContractUtils.getPurchasesMessage(
                     0,
@@ -1635,7 +1635,7 @@ describe("Test of Server", function () {
                 shopId: shop.shopId,
                 account: userAccount,
                 phone: phoneHash,
-                sender: deployments.accounts.foundation.address,
+                sender: deployments.accounts.system.address,
             };
             const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam], contractManager.sideChainId);
             const signatures = await Promise.all(

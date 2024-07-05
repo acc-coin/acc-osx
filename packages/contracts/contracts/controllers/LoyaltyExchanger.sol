@@ -49,7 +49,7 @@ contract LoyaltyExchanger is LoyaltyExchangerStorage, Initializable, OwnableUpgr
         require(_msgSender() == owner(), "1050");
         if (!isSetLedger) {
             ledgerContract = ILedger(_contractAddress);
-            foundationAccount = ledgerContract.getFoundationAccount();
+            systemAccount = ledgerContract.getSystemAccount();
             isSetLedger = true;
         }
     }
@@ -88,8 +88,8 @@ contract LoyaltyExchanger is LoyaltyExchangerStorage, Initializable, OwnableUpgr
 
         require(ledgerContract.pointBalanceOf(_account) >= _amount, "1511");
         uint256 amountToken = currencyRateContract.convertPointToToken(_amount);
-        require(ledgerContract.tokenBalanceOf(foundationAccount) >= amountToken, "1510");
-        ledgerContract.transferToken(foundationAccount, _account, amountToken);
+        require(ledgerContract.tokenBalanceOf(systemAccount) >= amountToken, "1510");
+        ledgerContract.transferToken(systemAccount, _account, amountToken);
         ledgerContract.subPointBalance(_account, _amount);
         ledgerContract.increaseNonce(_account);
         emit ChangedPointToToken(

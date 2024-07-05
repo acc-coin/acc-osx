@@ -51,7 +51,7 @@ interface IDeployedContract {
 interface IAccount {
     deployer: Wallet;
     owner: Wallet;
-    foundation: Wallet;
+    system: Wallet;
     paymentFee: Wallet;
     protocolFee: Wallet;
     validators: Wallet[];
@@ -82,7 +82,7 @@ class Deployments {
             deployer_side_chain,
             deployer_main_chain,
             owner,
-            foundation,
+            system,
             paymentFee,
             protocolFee,
             validator01,
@@ -125,7 +125,7 @@ class Deployments {
         this.accounts = {
             deployer: deployer_side_chain,
             owner,
-            foundation,
+            system,
             paymentFee,
             protocolFee,
             validators: [
@@ -351,8 +351,8 @@ async function distributeToken(accounts: IAccount, deployment: Deployments) {
 
     {
         const assetAmount = Amount.make(9_000_000_000, 18);
-        const tx1 = await contract.connect(accounts.owner).transfer(accounts.foundation.address, assetAmount.value);
-        console.log(`Transfer token to foundation (tx: ${tx1.hash})...`);
+        const tx1 = await contract.connect(accounts.owner).transfer(accounts.system.address, assetAmount.value);
+        console.log(`Transfer token to system (tx: ${tx1.hash})...`);
         // await tx1.wait();
 
         const userAmount = Amount.make(200_000, 18);
@@ -726,7 +726,7 @@ async function deployLedger(accounts: IAccount, deployment: Deployments) {
         factory.connect(accounts.deployer),
         [
             {
-                foundation: accounts.foundation.address,
+                system: accounts.system.address,
                 paymentFee: accounts.paymentFee.address,
                 protocolFee: accounts.protocolFee.address,
             },
@@ -797,13 +797,13 @@ async function deployLedger(accounts: IAccount, deployment: Deployments) {
     {
         const assetAmount = Amount.make(8_000_000_000, 18);
         const tx5 = await (deployment.getContract("LoyaltyToken") as LoyaltyToken)
-            .connect(accounts.foundation)
+            .connect(accounts.system)
             .approve(contract.address, assetAmount.value);
-        console.log(`Approve foundation's amount (tx: ${tx5.hash})...`);
+        console.log(`Approve system's amount (tx: ${tx5.hash})...`);
         // await tx5.wait();
 
-        const tx6 = await contract.connect(accounts.foundation).deposit(assetAmount.value);
-        console.log(`Deposit foundation's amount (tx: ${tx6.hash})...`);
+        const tx6 = await contract.connect(accounts.system).deposit(assetAmount.value);
+        console.log(`Deposit system's amount (tx: ${tx6.hash})...`);
         // await tx6.wait();
 
         console.log(`Deposit users.json`);
@@ -883,20 +883,20 @@ async function deployLedger(accounts: IAccount, deployment: Deployments) {
             const assetAmount2 = Amount.make(1_000_000_000, 18).value;
             const tokenContract = deployment.getContract("LoyaltyToken") as LoyaltyToken;
             const tokenId = ContractUtils.getTokenId(await tokenContract.name(), await tokenContract.symbol());
-            const nonce = await tokenContract.nonceOf(accounts.foundation.address);
+            const nonce = await tokenContract.nonceOf(accounts.system.address);
             const expiry = ContractUtils.getTimeStamp() + 3600;
             const message = ContractUtils.getTransferMessage(
                 chainId,
                 tokenContract.address,
-                accounts.foundation.address,
+                accounts.system.address,
                 contract.address,
                 assetAmount2,
                 nonce,
                 expiry
             );
-            const signature = await ContractUtils.signMessage(accounts.foundation, message);
+            const signature = await ContractUtils.signMessage(accounts.system, message);
             const tx1 = await contract
-                .connect(accounts.foundation)
+                .connect(accounts.system)
                 .depositLiquidity(tokenId, assetAmount2, expiry, signature);
             console.log(`Deposit liquidity token (tx: ${tx1.hash})...`);
             // await tx1.wait();
@@ -1019,7 +1019,7 @@ async function storeSamplePurchase1(accounts: IAccount, deployment: Deployments)
             shopId: shops[shops.length - 1].shopId,
             account: m.address,
             phone: phoneHash,
-            sender: accounts.foundation.address,
+            sender: accounts.system.address,
         };
     });
     const chainId = (await hre.ethers.provider.getNetwork()).chainId;
@@ -1042,7 +1042,7 @@ async function storeSamplePurchase1(accounts: IAccount, deployment: Deployments)
             shopId: shops[shops.length - 1].shopId,
             account: m.address,
             phone: ContractUtils.getPhoneHash(""),
-            sender: accounts.foundation.address,
+            sender: accounts.system.address,
         };
     });
     const purchaseMessage2 = ContractUtils.getPurchasesMessage(0, purchaseParams2, chainId);
@@ -1066,7 +1066,7 @@ async function storeSamplePurchase1(accounts: IAccount, deployment: Deployments)
             shopId: shops[shops.length - 1].shopId,
             account: AddressZero,
             phone: ContractUtils.getPhoneHash(m.phone),
-            sender: accounts.foundation.address,
+            sender: accounts.system.address,
         };
     });
     const purchaseMessage3 = ContractUtils.getPurchasesMessage(0, purchaseParams3, chainId);
@@ -1090,7 +1090,7 @@ async function storeSamplePurchase1(accounts: IAccount, deployment: Deployments)
             shopId: shops[shops.length - 1].shopId,
             account: AddressZero,
             phone: ContractUtils.getPhoneHash(m.phone),
-            sender: accounts.foundation.address,
+            sender: accounts.system.address,
         };
     });
     const purchaseMessage4 = ContractUtils.getPurchasesMessage(0, purchaseParams4, chainId);
@@ -1128,7 +1128,7 @@ async function storeSamplePurchase2(accounts: IAccount, deployment: Deployments)
             shopId: shops[shops.length - 1].shopId,
             account: m.address,
             phone: phoneHash,
-            sender: accounts.foundation.address,
+            sender: accounts.system.address,
         };
     });
     const chainId = (await hre.ethers.provider.getNetwork()).chainId;
@@ -1151,7 +1151,7 @@ async function storeSamplePurchase2(accounts: IAccount, deployment: Deployments)
             shopId: shops[shops.length - 1].shopId,
             account: AddressZero,
             phone: ContractUtils.getPhoneHash(m.phone),
-            sender: accounts.foundation.address,
+            sender: accounts.system.address,
         };
     });
     const purchaseMessage3 = ContractUtils.getPurchasesMessage(0, purchaseParams3, chainId);

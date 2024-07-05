@@ -45,7 +45,7 @@ interface IDeployedContract {
 export interface IAccount {
     deployer: Wallet;
     owner: Wallet;
-    foundation: Wallet;
+    system: Wallet;
     paymentFee: Wallet;
     protocolFee: Wallet;
     validators: Wallet[];
@@ -74,7 +74,7 @@ export class Deployments {
             deployer,
             deployer_main_chain,
             owner,
-            foundation,
+            system,
             paymentFee,
             protocolFee,
             validator01,
@@ -139,7 +139,7 @@ export class Deployments {
         this.accounts = {
             deployer,
             owner,
-            foundation,
+            system,
             paymentFee,
             protocolFee,
             validators: [validator01, validator02, validator03],
@@ -337,8 +337,8 @@ async function deployToken(accounts: IAccount, deployment: Deployments) {
 
     {
         const assetAmount = Amount.make(7_000_000_000, 18);
-        const tx1 = await contract.connect(accounts.owner).transfer(accounts.foundation.address, assetAmount.value);
-        console.log(`Transfer token to foundation (tx: ${tx1.hash})...`);
+        const tx1 = await contract.connect(accounts.owner).transfer(accounts.system.address, assetAmount.value);
+        console.log(`Transfer token to system (tx: ${tx1.hash})...`);
         await tx1.wait();
 
         const userAmount = Amount.make(200_000, 18);
@@ -746,7 +746,7 @@ async function deployLedger(accounts: IAccount, deployment: Deployments) {
         factory.connect(accounts.deployer),
         [
             {
-                foundation: accounts.foundation.address,
+                system: accounts.system.address,
                 paymentFee: accounts.paymentFee.address,
                 protocolFee: accounts.protocolFee.address,
             },
@@ -817,13 +817,13 @@ async function deployLedger(accounts: IAccount, deployment: Deployments) {
     {
         const assetAmount = Amount.make(100_000_000, 18);
         const tx11 = await (deployment.getContract("TestLYT") as TestLYT)
-            .connect(accounts.foundation)
+            .connect(accounts.system)
             .approve(contract.address, assetAmount.value);
-        console.log(`Approve foundation's amount (tx: ${tx11.hash})...`);
+        console.log(`Approve system's amount (tx: ${tx11.hash})...`);
         await tx11.wait();
 
-        const tx12 = await contract.connect(accounts.foundation).deposit(assetAmount.value);
-        console.log(`Deposit foundation's amount (tx: ${tx12.hash})...`);
+        const tx12 = await contract.connect(accounts.system).deposit(assetAmount.value);
+        console.log(`Deposit system's amount (tx: ${tx12.hash})...`);
         await tx12.wait();
     }
     {

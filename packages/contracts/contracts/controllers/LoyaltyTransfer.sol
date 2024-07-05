@@ -38,7 +38,7 @@ contract LoyaltyTransfer is LoyaltyTransferStorage, Initializable, OwnableUpgrad
         require(_msgSender() == owner(), "1050");
         if (!isSetLedger) {
             ledgerContract = ILedger(_contractAddress);
-            foundationAccount = ledgerContract.getFoundationAccount();
+            systemAccount = ledgerContract.getSystemAccount();
             isSetLedger = true;
         }
     }
@@ -54,8 +54,8 @@ contract LoyaltyTransfer is LoyaltyTransferStorage, Initializable, OwnableUpgrad
         uint256 _expiry,
         bytes calldata _signature
     ) external {
-        require(_from != foundationAccount, "1051");
-        require(_to != foundationAccount, "1052");
+        require(_from != systemAccount, "1051");
+        require(_to != systemAccount, "1052");
         bytes32 dataHash = keccak256(
             abi.encode(block.chainid, address(this), _from, _to, _amount, ledgerContract.nonceOf(_from), _expiry)
         );

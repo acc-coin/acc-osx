@@ -34,7 +34,7 @@ interface IDeployedContract {
 interface IAccount {
     deployer: Wallet;
     owner: Wallet;
-    foundation: Wallet;
+    system: Wallet;
     paymentFee: Wallet;
     protocolFee: Wallet;
     validators: Wallet[];
@@ -63,7 +63,7 @@ class Deployments {
             deployer_side_chain,
             deployer_main_chain,
             owner,
-            foundation,
+            system,
             paymentFee,
             protocolFee,
             validator01,
@@ -108,7 +108,7 @@ class Deployments {
         this.accounts = {
             deployer: deployer_main_chain,
             owner,
-            foundation,
+            system,
             paymentFee,
             protocolFee,
             validators: [
@@ -324,8 +324,8 @@ async function distributeToken(accounts: IAccount, deployment: Deployments) {
 
     {
         const assetAmount = Amount.make(1_500_000_000, 18);
-        const tx1 = await contract.connect(accounts.owner).transfer(accounts.foundation.address, assetAmount.value);
-        console.log(`Transfer token to foundation (tx: ${tx1.hash})...`);
+        const tx1 = await contract.connect(accounts.owner).transfer(accounts.system.address, assetAmount.value);
+        console.log(`Transfer token to system (tx: ${tx1.hash})...`);
         await tx1.wait();
 
         const userAmount = Amount.make(200_000, 18);

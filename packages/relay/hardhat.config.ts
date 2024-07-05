@@ -47,21 +47,25 @@ function getAccounts() {
     }
 
     if (
-        process.env.FOUNDATION !== undefined &&
-        process.env.FOUNDATION.trim() !== "" &&
-        reg_bytes64.test(process.env.FOUNDATION)
+        process.env.ACC_SYSTEM !== undefined &&
+        process.env.ACC_SYSTEM.trim() !== "" &&
+        reg_bytes64.test(process.env.ACC_SYSTEM)
     ) {
-        accounts.push(process.env.FOUNDATION);
+        accounts.push(process.env.ACC_SYSTEM);
     } else {
-        process.env.FOUNDATION = Wallet.createRandom().privateKey;
-        accounts.push(process.env.FOUNDATION);
+        process.env.ACC_SYSTEM = Wallet.createRandom().privateKey;
+        accounts.push(process.env.ACC_SYSTEM);
     }
 
-    if (process.env.FEE !== undefined && process.env.FEE.trim() !== "" && reg_bytes64.test(process.env.FEE)) {
-        accounts.push(process.env.FEE);
+    if (
+        process.env.PAYMENT_FEE !== undefined &&
+        process.env.PAYMENT_FEE.trim() !== "" &&
+        reg_bytes64.test(process.env.PAYMENT_FEE)
+    ) {
+        accounts.push(process.env.PAYMENT_FEE);
     } else {
-        process.env.FEE = Wallet.createRandom().privateKey;
-        accounts.push(process.env.FEE);
+        process.env.PAYMENT_FEE = Wallet.createRandom().privateKey;
+        accounts.push(process.env.PAYMENT_FEE);
     }
 
     if (

@@ -59,7 +59,7 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
     event RemovedPhoneInfo(bytes32 phone, address account);
 
     struct ManagementAddresses {
-        address foundation;
+        address system;
         address paymentFee;
         address protocolFee;
     }
@@ -85,7 +85,7 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         __UUPSUpgradeable_init();
         __Ownable_init_unchained();
 
-        foundationAccount = managements.foundation;
+        systemAccount = managements.system;
         paymentFeeAccount = managements.paymentFee;
         protocolFeeAccount = managements.protocolFee;
 
@@ -179,7 +179,7 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
     /// @notice 토큰을 인출합니다.
     /// @param _amount 금액
     function withdraw(uint256 _amount) external virtual {
-        require(_msgSender() != foundationAccount, "1053");
+        require(_msgSender() != systemAccount, "1053");
         require(_amount % 1 gwei == 0, "1030");
         require(_amount <= tokenBalances[_msgSender()], "1511");
         tokenContract.transfer(_msgSender(), _amount);
@@ -222,7 +222,7 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         bytes32 _shopId,
         address _sender
     ) internal {
-        if (_sender == foundationAccount) {
+        if (_sender == systemAccount) {
             unPayablePointBalances[_phone] += _loyaltyPoint;
         } else {
             uint256 amountToken = currencyRateContract.convertPointToToken(_loyaltyPoint);
@@ -263,7 +263,7 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         bytes32 _shopId,
         address _sender
     ) internal {
-        if (_sender == foundationAccount) {
+        if (_sender == systemAccount) {
             pointBalances[_account] += _loyaltyPoint;
         } else {
             uint256 amountToken = currencyRateContract.convertPointToToken(_loyaltyPoint);
@@ -271,7 +271,7 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
 
             pointBalances[_account] += _loyaltyPoint;
             tokenBalances[_sender] -= amountToken;
-            tokenBalances[foundationAccount] += amountToken;
+            tokenBalances[systemAccount] += amountToken;
         }
         uint256 balance = pointBalances[_account];
         emit ProvidedPoint(_account, _loyaltyPoint, _loyaltyValue, _currency, balance, _purchaseId, _shopId);
@@ -284,10 +284,10 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         uint256 amountToken,
         bytes32 _shopId
     ) external override onlyShop {
-        require(tokenBalances[foundationAccount] >= amountToken, "1511");
+        require(tokenBalances[systemAccount] >= amountToken, "1511");
 
         tokenBalances[_account] += amountToken;
-        tokenBalances[foundationAccount] -= amountToken;
+        tokenBalances[systemAccount] -= amountToken;
         uint256 balanceToken = tokenBalances[_account];
         emit Refunded(_account, _amountValue, _currency, amountToken, balanceToken, _shopId);
     }
@@ -370,8 +370,8 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         pointBalances[_account] += amount;
     }
 
-    function getFoundationAccount() external view override returns (address) {
-        return foundationAccount;
+    function getSystemAccount() external view override returns (address) {
+        return systemAccount;
     }
 
     function getPaymentFeeAccount() external view override returns (address) {
@@ -427,7 +427,7 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
 
     /// @notice 브리지를 위한 유동성 자금을 인출합니다.
     function withdrawLiquidity(bytes32 _tokenId, uint256 _amount) external override {
-        require(_msgSender() != foundationAccount, "1053");
+        require(_msgSender() != systemAccount, "1053");
         require(_tokenId == tokenId, "1713");
         require(liquidity[_msgSender()] >= _amount, "1514");
         require(tokenBalances[bridgeAddress] >= _amount, "1511");

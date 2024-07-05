@@ -1201,9 +1201,9 @@
 | 1030  | 금액이 gwei의 배수가 아닙니다<br/>Amount not multiple of gwei                                                                        |
 | 1031  | 입력된 금액이 최소금액보다 작습니다<br/>The amount entered is less than the minimum amount                                                |
 | 1050  | 트랜잭션을 보낸자는 인증되지 않은 자입니다<br/>Sender is not authorized to execute                                                           |
-| 1051  | 전송이 되지 않는 자금입니다<br/>Unable to transfer from foundation account                                                            |
-| 1052  | 전송할 수 없는 주소입니다<br/>Unable to transfer to foundation account                                                               |
-| 1053  | 인출될 수 없는 자금입니다<br/>Unable to withdraw from the foundation account                                                         |
+| 1051  | 전송이 되지 않는 자금입니다<br/>Unable to transfer from system account                                                                |
+| 1052  | 전송할 수 없는 주소입니다<br/>Unable to transfer to system account                                                                   |
+| 1053  | 인출될 수 없는 자금입니다<br/>Unable to withdraw from the system account                                                             |
 | 1200  | 상점아이디가 이미 존재합니다<br/>The shop ID already exists                                                                            |
 | 1201  | 상점아이디가 존재하지 않습니다<br/>The shop ID is not exists                                                                            |
 | 1202  | 상점이 활성화 되지 않았습니다<br/>The shop is not activated                                                                            |
@@ -1216,10 +1216,10 @@
 | 1503  | 등록된 지갑주소와 동일하지 않습니다<br/>Does not match registered wallet address                                                          |
 | 1505  | 유효하지 않은 비밀키입니다<br/>Invalid secret key                                                                                     |
 | 1506  | 만기된 서명입니다<br/>Expired signature                                                                                           |
-| 1510  | 재단의 잔고가 부족합니다<br/>Insufficient foundation balance                                                                         |
+| 1510  | 시스템의 잔고가 부족합니다<br/>Insufficient system balance                                                                            |
 | 1511  | 사용자의 잔고가 부족합니다<br/>Insufficient balance                                                                                   |
 | 1512  | 예치을 허용하지 않았습니다<br/>Not allowed deposit                                                                                    |
-| 1513  | 수수료 계정 또는 재단 계정의 잔고가 부족합니다<br/>Insufficient fee or foundation balance                                                     |
+| 1513  | 수수료 계정 또는 시스템 계정의 잔고가 부족합니다<br/>Insufficient fee or system balance                                                        |
 | 1514  | 교환을 위해 필요한 유동성자금이 충분하지 않습니다<br/>Insufficient liquidity balance                                                            |
 | 1520  | 로열티 종류가 토큰가 아닙니다. 토큰만이 인출과 예치가 가능합니다.<br/>Loyalty type is not TOKEN                                                       |
 | 1521  | 잘못된 값을 입력했습니다<br/>Invalid value entered                                                                                   |

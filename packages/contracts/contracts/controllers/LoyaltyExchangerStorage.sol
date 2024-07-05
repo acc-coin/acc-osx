@@ -8,7 +8,7 @@ import "../interfaces/ICurrencyRate.sol";
 import "../interfaces/ILedger.sol";
 
 contract LoyaltyExchangerStorage {
-    address internal foundationAccount;
+    address internal systemAccount;
 
     IPhoneLinkCollection internal linkContract;
     ICurrencyRate internal currencyRateContract;

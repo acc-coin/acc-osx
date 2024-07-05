@@ -35,7 +35,7 @@ contract LoyaltyBridge is LoyaltyBridgeStorage, Initializable, OwnableUpgradeabl
         require(_msgSender() == owner(), "1050");
         if (!isSetLedger) {
             ledgerContract = ILedger(_contractAddress);
-            foundationAccount = ledgerContract.getFoundationAccount();
+            systemAccount = ledgerContract.getSystemAccount();
             tokenContract = BIP20DelegatedTransfer(ledgerContract.getTokenAddress());
             tokenId = BridgeLib.getTokenId(tokenContract.name(), tokenContract.symbol());
             isSetLedger = true;
@@ -86,7 +86,7 @@ contract LoyaltyBridge is LoyaltyBridgeStorage, Initializable, OwnableUpgradeabl
         bytes calldata _signature
     ) external payable override notExistDeposit(_depositId) {
         require(_tokenId == tokenId, "1713");
-        require(_account != foundationAccount, "1053");
+        require(_account != systemAccount, "1053");
 
         bytes32 dataHash = keccak256(
             abi.encode(

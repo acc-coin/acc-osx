@@ -214,7 +214,7 @@ describe("Test of Server", function () {
                     shopId: shopData[0].shopId,
                     account: m.address,
                     phone: phoneHash,
-                    sender: deployments.accounts.foundation.address,
+                    sender: deployments.accounts.system.address,
                 };
             });
             const purchaseMessage = ContractUtils.getPurchasesMessage(0, purchaseParam, contractManager.sideChainId);

@@ -49,7 +49,7 @@ contract LoyaltyConsumer is LoyaltyConsumerStorage, Initializable, OwnableUpgrad
         require(_msgSender() == owner(), "1050");
         if (!isSetLedger) {
             ledgerContract = ILedger(_contractAddress);
-            foundationAccount = ledgerContract.getFoundationAccount();
+            systemAccount = ledgerContract.getSystemAccount();
             isSetLedger = true;
         }
     }
@@ -136,9 +136,9 @@ contract LoyaltyConsumer is LoyaltyConsumerStorage, Initializable, OwnableUpgrad
             // 임시저장 포인트를 소각한다.
             ledgerContract.subPointBalance(temporaryAddress, totalPoint);
 
-            // 재단의 토큰으로 교환해 수수료계좌에 지급한다.
-            if (ledgerContract.tokenBalanceOf(foundationAccount) >= loyaltyPayments[_paymentId].feeToken) {
-                ledgerContract.subTokenBalance(foundationAccount, loyaltyPayments[_paymentId].feeToken);
+            // 시스템의 토큰으로 교환해 수수료계좌에 지급한다.
+            if (ledgerContract.tokenBalanceOf(systemAccount) >= loyaltyPayments[_paymentId].feeToken) {
+                ledgerContract.subTokenBalance(systemAccount, loyaltyPayments[_paymentId].feeToken);
                 ledgerContract.addTokenBalance(ledgerContract.getPaymentFeeAccount(), loyaltyPayments[_paymentId].feeToken);
             }
             IShop.ShopData memory shop = shopContract.shopOf(loyaltyPayments[_paymentId].shopId);
@@ -235,7 +235,7 @@ contract LoyaltyConsumer is LoyaltyConsumerStorage, Initializable, OwnableUpgrad
 
         uint256 balance;
         if (_confirm) {
-            ledgerContract.transferToken(temporaryAddress, foundationAccount, loyaltyPayments[_paymentId].feeToken);
+            ledgerContract.transferToken(temporaryAddress, systemAccount, loyaltyPayments[_paymentId].feeToken);
             ledgerContract.addPointBalance(
                 loyaltyPayments[_paymentId].account,
                 loyaltyPayments[_paymentId].paidPoint + loyaltyPayments[_paymentId].feePoint

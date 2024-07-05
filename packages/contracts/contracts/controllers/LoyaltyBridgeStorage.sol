@@ -14,7 +14,7 @@ contract LoyaltyBridgeStorage {
     mapping(bytes32 => IBridge.WithdrawData) internal withdraws;
     mapping(bytes32 => mapping(address => bool)) internal confirmations;
 
-    address internal foundationAccount;
+    address internal systemAccount;
 
     uint256 internal protocolFee;
 

@@ -263,7 +263,7 @@ describe("Test for Ledger", () => {
                         shopId: shopData[purchase.shopIndex].shopId,
                         account: userAccount,
                         phone: phoneHash,
-                        sender: deployments.accounts.foundation.address,
+                        sender: deployments.accounts.system.address,
                     };
                     const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                     const signatures = await Promise.all(
@@ -302,7 +302,7 @@ describe("Test for Ledger", () => {
                             shopId: shopData[purchase.shopIndex].shopId,
                             account: userAccount,
                             phone: phoneHash,
-                            sender: deployments.accounts.foundation.address,
+                            sender: deployments.accounts.system.address,
                         };
                         const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                         const signatures = await Promise.all(
@@ -345,7 +345,7 @@ describe("Test for Ledger", () => {
                             shopId: shopData[purchase.shopIndex].shopId,
                             account: userAccount,
                             phone: phoneHash,
-                            sender: deployments.accounts.foundation.address,
+                            sender: deployments.accounts.system.address,
                         };
                         const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                         const signatures = await Promise.all(
@@ -436,7 +436,7 @@ describe("Test for Ledger", () => {
                     shopId: shopData[purchase.shopIndex].shopId,
                     account: userAccount,
                     phone: phoneHash,
-                    sender: deployments.accounts.foundation.address,
+                    sender: deployments.accounts.system.address,
                 };
                 const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                 const signatures = await Promise.all(
@@ -522,9 +522,7 @@ describe("Test for Ledger", () => {
                 const oldTokenBalance = await ledgerContract.tokenBalanceOf(
                     deployments.accounts.users[purchase.userIndex].address
                 );
-                const oldFoundationTokenBalance = await ledgerContract.tokenBalanceOf(
-                    deployments.accounts.foundation.address
-                );
+                const oldSystemTokenBalance = await ledgerContract.tokenBalanceOf(deployments.accounts.system.address);
 
                 const purchaseParam = {
                     purchaseId: getPurchaseId(),
@@ -534,7 +532,7 @@ describe("Test for Ledger", () => {
                     shopId: shopData[purchase.shopIndex].shopId,
                     account: userAccount,
                     phone: phoneHash,
-                    sender: deployments.accounts.foundation.address,
+                    sender: deployments.accounts.system.address,
                 };
                 const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                 const signatures = await Promise.all(
@@ -575,8 +573,8 @@ describe("Test for Ledger", () => {
                 expect(
                     await ledgerContract.tokenBalanceOf(deployments.accounts.users[purchase.userIndex].address)
                 ).to.deep.equal(oldTokenBalance);
-                expect(await ledgerContract.tokenBalanceOf(deployments.accounts.foundation.address)).to.deep.equal(
-                    oldFoundationTokenBalance
+                expect(await ledgerContract.tokenBalanceOf(deployments.accounts.system.address)).to.deep.equal(
+                    oldSystemTokenBalance
                 );
             });
 
@@ -635,9 +633,7 @@ describe("Test for Ledger", () => {
                 const oldTokenBalance = await ledgerContract.tokenBalanceOf(
                     deployments.accounts.users[purchase.userIndex].address
                 );
-                const oldFoundationTokenBalance = await ledgerContract.tokenBalanceOf(
-                    deployments.accounts.foundation.address
-                );
+                const oldSystemTokenBalance = await ledgerContract.tokenBalanceOf(deployments.accounts.system.address);
 
                 const purchaseParam = {
                     purchaseId: getPurchaseId(),
@@ -647,7 +643,7 @@ describe("Test for Ledger", () => {
                     shopId: shopData[purchase.shopIndex].shopId,
                     account: userAccount,
                     phone: phoneHash,
-                    sender: deployments.accounts.foundation.address,
+                    sender: deployments.accounts.system.address,
                 };
                 const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                 const signatures = await Promise.all(
@@ -688,8 +684,8 @@ describe("Test for Ledger", () => {
                 expect(
                     await ledgerContract.tokenBalanceOf(deployments.accounts.users[purchase.userIndex].address)
                 ).to.deep.equal(oldTokenBalance);
-                expect(await ledgerContract.tokenBalanceOf(deployments.accounts.foundation.address)).to.deep.equal(
-                    oldFoundationTokenBalance
+                expect(await ledgerContract.tokenBalanceOf(deployments.accounts.system.address)).to.deep.equal(
+                    oldSystemTokenBalance
                 );
             });
 
@@ -722,7 +718,7 @@ describe("Test for Ledger", () => {
                     shopId: shopData[purchase.shopIndex].shopId,
                     account: userAccount,
                     phone: phoneHash,
-                    sender: deployments.accounts.foundation.address,
+                    sender: deployments.accounts.system.address,
                 };
                 const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                 const signatures = await Promise.all(
@@ -806,9 +802,7 @@ describe("Test for Ledger", () => {
                 const oldTokenBalance = await ledgerContract.tokenBalanceOf(
                     deployments.accounts.users[purchase.userIndex].address
                 );
-                const oldFoundationTokenBalance = await ledgerContract.tokenBalanceOf(
-                    deployments.accounts.foundation.address
-                );
+                const oldSystemTokenBalance = await ledgerContract.tokenBalanceOf(deployments.accounts.system.address);
 
                 const purchaseParam = {
                     purchaseId: getPurchaseId(),
@@ -818,7 +812,7 @@ describe("Test for Ledger", () => {
                     shopId: shopData[purchase.shopIndex].shopId,
                     account: userAccount,
                     phone: phoneHash,
-                    sender: deployments.accounts.foundation.address,
+                    sender: deployments.accounts.system.address,
                 };
                 const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                 const signatures = await Promise.all(
@@ -859,8 +853,8 @@ describe("Test for Ledger", () => {
                 expect(
                     await ledgerContract.tokenBalanceOf(deployments.accounts.users[purchase.userIndex].address)
                 ).to.deep.equal(oldTokenBalance);
-                expect(await ledgerContract.tokenBalanceOf(deployments.accounts.foundation.address)).to.deep.equal(
-                    oldFoundationTokenBalance
+                expect(await ledgerContract.tokenBalanceOf(deployments.accounts.system.address)).to.deep.equal(
+                    oldSystemTokenBalance
                 );
             });
 
@@ -921,7 +915,7 @@ describe("Test for Ledger", () => {
                     shopId: shopData[purchase.shopIndex].shopId,
                     account: userAccount,
                     phone: phoneHash,
-                    sender: deployments.accounts.foundation.address,
+                    sender: deployments.accounts.system.address,
                 };
                 const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                 const signatures = await Promise.all(
@@ -1239,7 +1233,7 @@ describe("Test for Ledger", () => {
                     shopId: shopData[0].shopId,
                     account: userAccount,
                     phone: phoneHash,
-                    sender: deployments.accounts.foundation.address,
+                    sender: deployments.accounts.system.address,
                 });
             }
 
@@ -1408,9 +1402,9 @@ describe("Test for Ledger", () => {
         });
 
         context("Withdraw token", () => {
-            it("Withdraw token - foundation account", async () => {
+            it("Withdraw token - system account", async () => {
                 await expect(
-                    ledgerContract.connect(deployments.accounts.foundation).withdraw(BigNumber.from(100))
+                    ledgerContract.connect(deployments.accounts.system).withdraw(BigNumber.from(100))
                 ).to.revertedWith("1053");
             });
 
@@ -1624,7 +1618,7 @@ describe("Test for Ledger", () => {
                         shopId: shopData[purchase.shopIndex].shopId,
                         account: userAccount,
                         phone: phoneHash,
-                        sender: deployments.accounts.foundation.address,
+                        sender: deployments.accounts.system.address,
                     };
                     const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                     const signatures = await Promise.all(
@@ -1868,7 +1862,7 @@ describe("Test for Ledger", () => {
                         shopId: shopData[purchase.shopIndex].shopId,
                         account: userAccount,
                         phone: phoneHash,
-                        sender: deployments.accounts.foundation.address,
+                        sender: deployments.accounts.system.address,
                     };
                     const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                     const signatures = await Promise.all(
@@ -2195,7 +2189,7 @@ describe("Test for Ledger", () => {
                         shopId: shopData[purchase.shopIndex].shopId,
                         account: userAccount,
                         phone: phoneHash,
-                        sender: deployments.accounts.foundation.address,
+                        sender: deployments.accounts.system.address,
                     };
                     const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                     const signatures = await Promise.all(
@@ -2432,23 +2426,23 @@ describe("Test for Ledger", () => {
             );
         });
 
-        it("Transfer token - foundation account ", async () => {
+        it("Transfer token - system account ", async () => {
             const transferAmount = amount.value;
-            const nonce = await ledgerContract.nonceOf(deployments.accounts.foundation.address);
+            const nonce = await ledgerContract.nonceOf(deployments.accounts.system.address);
             const expiry = ContractUtils.getTimeStamp() + 3600;
             const message = ContractUtils.getTransferMessage(
                 hre.ethers.provider.network.chainId,
                 transferContract.address,
-                deployments.accounts.foundation.address,
+                deployments.accounts.system.address,
                 deployments.accounts.users[1].address,
                 transferAmount,
                 nonce,
                 expiry
             );
-            const signature = await ContractUtils.signMessage(deployments.accounts.foundation, message);
+            const signature = await ContractUtils.signMessage(deployments.accounts.system, message);
             await expect(
                 transferContract.transferToken(
-                    deployments.accounts.foundation.address,
+                    deployments.accounts.system.address,
                     deployments.accounts.users[1].address,
                     transferAmount,
                     expiry,
@@ -2457,7 +2451,7 @@ describe("Test for Ledger", () => {
             ).to.revertedWith("1051");
         });
 
-        it("Transfer token - foundation account ", async () => {
+        it("Transfer token - system account ", async () => {
             const transferAmount = amount.value;
             const nonce = await ledgerContract.nonceOf(deployments.accounts.users[0].address);
             const expiry = ContractUtils.getTimeStamp() + 3600;
@@ -2465,7 +2459,7 @@ describe("Test for Ledger", () => {
                 hre.ethers.provider.network.chainId,
                 transferContract.address,
                 deployments.accounts.users[0].address,
-                deployments.accounts.foundation.address,
+                deployments.accounts.system.address,
                 transferAmount,
                 nonce,
                 expiry
@@ -2474,7 +2468,7 @@ describe("Test for Ledger", () => {
             await expect(
                 transferContract.transferToken(
                     deployments.accounts.users[0].address,
-                    deployments.accounts.foundation.address,
+                    deployments.accounts.system.address,
                     transferAmount,
                     expiry,
                     signature
@@ -2659,7 +2653,7 @@ describe("Test for Ledger", () => {
                 shopId: shopData[purchase.shopIndex].shopId,
                 account: userAccount,
                 phone: phoneHash,
-                sender: deployments.accounts.foundation.address,
+                sender: deployments.accounts.system.address,
             };
             const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
             const signatures = await Promise.all(

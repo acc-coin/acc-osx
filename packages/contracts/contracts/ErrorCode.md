@@ -20,10 +20,10 @@
 -   1502: Unregistered phone number
 -   1503: Does not match registered wallet address
 
--   1510: Insufficient foundation balance
+-   1510: Insufficient system balance
 -   1511: Insufficient balance
 -   1512: Not allowed deposit
--   1513: Insufficient fee or foundation balance
+-   1513: Insufficient fee or system balance
 
 -   1520: Loyalty type is not TOKEN
 -   1521: Invalid value entered

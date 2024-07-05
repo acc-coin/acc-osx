@@ -57,7 +57,7 @@ interface ILedger {
 
     function getPaymentFee() external view returns (uint32);
 
-    function getFoundationAccount() external view returns (address);
+    function getSystemAccount() external view returns (address);
 
     function getPaymentFeeAccount() external view returns (address);
 

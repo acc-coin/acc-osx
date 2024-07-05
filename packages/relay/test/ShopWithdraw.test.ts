@@ -294,7 +294,7 @@ describe("Test for Shop", () => {
                         shopId: shopData[purchase.shopIndex].shopId,
                         account: userAccount,
                         phone: phoneHash,
-                        sender: deployments.accounts.foundation.address,
+                        sender: deployments.accounts.system.address,
                     };
                     const purchaseMessage = ContractUtils.getPurchasesMessage(
                         0,
@@ -328,7 +328,7 @@ describe("Test for Shop", () => {
                             shopData[purchase.shopIndex].shopId,
                             userAccount,
                             phoneHash,
-                            deployments.accounts.foundation.address
+                            deployments.accounts.system.address
                         )
                         .emit(ledgerContract, "ProvidedPoint")
                         .withNamedArgs({
@@ -415,7 +415,7 @@ describe("Test for Shop", () => {
                     shopId: shopData[5].shopId,
                     account: m.address,
                     phone: phoneHash,
-                    sender: deployments.accounts.foundation.address,
+                    sender: deployments.accounts.system.address,
                 };
             });
             const purchaseMessage = ContractUtils.getPurchasesMessage(0, purchaseParam, contractManager.sideChainId);
