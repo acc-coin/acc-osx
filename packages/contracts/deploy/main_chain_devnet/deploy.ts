@@ -13,6 +13,8 @@ import fs from "fs";
 
 import * as hre from "hardhat";
 
+import { AddressZero, HashZero } from "@ethersproject/constants";
+
 const network = "main_chain_devnet";
 
 export const MULTI_SIG_WALLET_ADDRESSES: { [key: string]: string } = {
@@ -428,15 +430,27 @@ async function deployMainChainBridge(accounts: IAccount, deployment: Deployments
     console.log(`Deployed ${contractName} to ${contract.address}`);
 
     {
+        // Native Token
+        const tx1 = await contract.connect(accounts.deployer).registerToken(HashZero, AddressZero);
+        console.log(`Register Native Token (tx: ${tx1.hash})...`);
+        await tx1.wait();
+
+        const nativeTokenAmount = Amount.make(500_000, 18).value;
+        const tx2 = await accounts.owner.sendTransaction({ to: contract.address, value: nativeTokenAmount });
+        console.log(`Deposit Native Token to MainChainBridge Bridge (tx: ${tx2.hash})...`);
+        await tx2.wait();
+
+        // BIP20 Token
         const tokenContract = deployment.getContract("LoyaltyToken") as LoyaltyToken;
         const tokenId = ContractUtils.getTokenId(await tokenContract.name(), await tokenContract.symbol());
-        const tx = await contract.connect(accounts.deployer).registerToken(tokenId, tokenContract.address);
-        console.log(`Register Token (tx: ${tx.hash})...`);
-        await tx.wait();
+        const tx3 = await contract.connect(accounts.deployer).registerToken(tokenId, tokenContract.address);
+        console.log(`Register Loyalty Token (tx: ${tx3.hash})...`);
+        await tx3.wait();
 
         const assetAmount = Amount.make(100_000_000, 18).value;
-        const tx1 = await tokenContract.connect(accounts.owner).transfer(contract.address, assetAmount);
-        await tx1.wait();
+        const tx4 = await tokenContract.connect(accounts.owner).transfer(contract.address, assetAmount);
+        console.log(`Deposit Loyalty Token to MainChainBridge (tx: ${tx4.hash})...`);
+        await tx4.wait();
     }
 }
 
