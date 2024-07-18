@@ -1,7 +1,7 @@
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-waffle";
 
-import { ethers, upgrades, waffle } from "hardhat";
+import { ethers, upgrades } from "hardhat";
 
 import { Amount } from "../src/utils/Amount";
 import { ContractUtils } from "../src/utils/ContractUtils";
@@ -20,8 +20,6 @@ describe("Test for CurrencyRate", () => {
     let tokenContract: ERC20;
     let currencyRateContract: CurrencyRate;
 
-    const amount = Amount.make(100_000, 18);
-
     before(async () => {
         await deployments.doDeployValidator();
 
@@ -39,6 +37,10 @@ describe("Test for CurrencyRate", () => {
         )) as CurrencyRate;
         await currencyRateContract.deployed();
         await currencyRateContract.deployTransaction.wait();
+    });
+
+    it("Check default symbol", async () => {
+        expect(await currencyRateContract.defaultSymbol()).to.equal("php");
     });
 
     it("Set Array - revert", async () => {

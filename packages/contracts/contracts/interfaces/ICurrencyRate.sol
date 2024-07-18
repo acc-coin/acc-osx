@@ -34,4 +34,6 @@ interface ICurrencyRate {
     ) external view returns (uint256);
 
     function multiple() external view returns (uint256);
+
+    function defaultSymbol() external view returns (string memory);
 }

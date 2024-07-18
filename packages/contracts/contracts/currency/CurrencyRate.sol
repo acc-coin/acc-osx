@@ -184,4 +184,8 @@ contract CurrencyRate is CurrencyStorage, Initializable, OwnableUpgradeable, UUP
     function multiple() external view override returns (uint256) {
         return MULTIPLE;
     }
+
+    function defaultSymbol() external view override returns (string memory) {
+        return DMS.DEFAULT_CURRENCY_SYMBOL;
+    }
 }
