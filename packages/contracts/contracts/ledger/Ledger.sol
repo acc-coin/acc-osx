@@ -58,6 +58,11 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
 
     event RemovedPhoneInfo(bytes32 phone, address account);
 
+    event RegisteredProvider(address provider);
+    event UnregisteredProvider(address provider);
+
+    event RegisteredAssistant(address provider, address assistant);
+
     struct ManagementAddresses {
         address system;
         address paymentFee;
@@ -129,7 +134,8 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
 
     modifier onlyAccessNonce() {
         require(
-            _msgSender() == consumerAddress ||
+            _msgSender() == providerAddress ||
+                _msgSender() == consumerAddress ||
                 _msgSender() == exchangerAddress ||
                 _msgSender() == transferAddress ||
                 _msgSender() == bridgeAddress,
@@ -456,5 +462,35 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         require(_msgSender() == protocolFeeAccount, "1050");
 
         protocolFeeAccount = _account;
+    }
+
+    function registerProvider(address _provider) external {
+        require(_msgSender() == owner(), "1050");
+        providers[_provider] = true;
+        emit RegisteredProvider(_provider);
+    }
+
+    function unregisterProvider(address _provider) external {
+        require(_msgSender() == owner(), "1050");
+        providers[_provider] = false;
+        emit UnregisteredProvider(_provider);
+    }
+
+    function registerAssistant(address _provider, address _assistant, bytes calldata _signature) external {
+        require(providers[_provider], "1054");
+        bytes32 dataHash = keccak256(abi.encode(_provider, _assistant, block.chainid, nonce[_provider]));
+        require(ECDSA.recover(ECDSA.toEthSignedMessageHash(dataHash), _signature) == _provider, "1501");
+        assistants[_provider] = _assistant;
+        nonce[_provider]++;
+
+        emit RegisteredAssistant(_provider, _assistant);
+    }
+
+    function isProvider(address _account) external view override returns (bool) {
+        return providers[_account];
+    }
+
+    function assistantOf(address _account) external view override returns (address) {
+        return assistants[_account];
     }
 }

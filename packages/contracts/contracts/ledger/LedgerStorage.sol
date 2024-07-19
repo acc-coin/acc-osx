@@ -18,6 +18,9 @@ contract LedgerStorage {
     mapping(address => uint256) internal nonce;
     mapping(address => uint256) internal liquidity;
 
+    mapping(address => bool) internal providers;
+    mapping(address => address) internal assistants;
+
     address public systemAccount;
     address public paymentFeeAccount;
     address public protocolFeeAccount;

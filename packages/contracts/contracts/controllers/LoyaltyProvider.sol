@@ -44,6 +44,8 @@ contract LoyaltyProvider is LoyaltyProviderStorage, Initializable, OwnableUpgrad
         address sender
     );
 
+    event ProvidedLoyaltyPoint(address provider, address receiver, uint256 amount);
+
     function initialize(
         address _validatorAddress,
         address _linkAddress,
@@ -64,6 +66,7 @@ contract LoyaltyProvider is LoyaltyProviderStorage, Initializable, OwnableUpgrad
         require(_msgSender() == owner(), "1050");
         if (!isSetLedger) {
             ledgerContract = ILedger(_contractAddress);
+            systemAccount = ledgerContract.getSystemAccount();
             isSetLedger = true;
         }
     }
@@ -224,5 +227,51 @@ contract LoyaltyProvider is LoyaltyProviderStorage, Initializable, OwnableUpgrad
 
     function purchasesOf(string calldata _purchaseId) external view returns (bool) {
         return purchases[_purchaseId];
+    }
+
+    function provide(address _provider, address _receiver, uint256 _point, bytes calldata _signature) external {
+        require(_provider != systemAccount, "1051");
+        require(_receiver != systemAccount, "1052");
+        require(ledgerContract.isProvider(_provider), "1054");
+        require(_point % 1 gwei == 0, "1030");
+
+        address recurve1 = ECDSA.recover(
+            ECDSA.toEthSignedMessageHash(
+                keccak256(abi.encode(_provider, _receiver, _point, block.chainid, ledgerContract.nonceOf(_provider)))
+            ),
+            _signature
+        );
+
+        address sender;
+        if (recurve1 == _provider) {
+            sender = _provider;
+        } else {
+            address assistant = ledgerContract.assistantOf(_provider);
+            require(assistant != address(0x0), "1501");
+
+            address recurve2 = ECDSA.recover(
+                ECDSA.toEthSignedMessageHash(
+                    keccak256(
+                        abi.encode(_provider, _receiver, _point, block.chainid, ledgerContract.nonceOf(assistant))
+                    )
+                ),
+                _signature
+            );
+            require(recurve2 == assistant, "1501");
+            sender = assistant;
+        }
+
+        ledgerContract.providePoint(
+            _receiver,
+            _point,
+            _point,
+            DMS.DEFAULT_CURRENCY_SYMBOL,
+            "",
+            bytes32(0x0),
+            _provider
+        );
+        ledgerContract.increaseNonce(sender);
+
+        emit ProvidedLoyaltyPoint(_provider, _receiver, _point);
     }
 }

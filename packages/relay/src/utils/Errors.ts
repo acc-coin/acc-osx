@@ -15,6 +15,7 @@ export class ResponseMessage {
         ["1051", "Unable to transfer from system account"],
         ["1052", "Unable to transfer to system account"],
         ["1053", "Unable to withdraw from the system account"],
+        ["1054", "Sender is not authorized to provide points"],
         ["1160", "ProvideLoyalty-This is a purchase data that has already been processed"],
         ["1161", "ProvideLoyalty-Too much royalty paid"],
         ["1162", "ProvideLoyalty-Registered validator does not exist"],

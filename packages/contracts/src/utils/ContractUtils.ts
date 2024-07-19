@@ -25,7 +25,7 @@ import * as hre from "hardhat";
 
 export enum LoyaltyNetworkID {
     LYT,
-    PNB,
+    ACC,
 }
 
 export class ContractUtils {
@@ -631,6 +631,33 @@ export class ContractUtils {
         const encodedResult = defaultAbiCoder.encode(
             ["uint256", "address", "address", "address", "uint256", "uint256", "uint256"],
             [chainId, tokenAddress, from, to, amount, nonce, expiry]
+        );
+        return arrayify(keccak256(encodedResult));
+    }
+
+    public static getProvidePointMessage(
+        provider: string,
+        receiver: string,
+        amount: BigNumberish,
+        nonce: BigNumberish,
+        chainId: BigNumberish
+    ): Uint8Array {
+        const encodedResult = defaultAbiCoder.encode(
+            ["address", "address", "uint256", "uint256", "uint256"],
+            [provider, receiver, amount, chainId, nonce]
+        );
+        return arrayify(keccak256(encodedResult));
+    }
+
+    public static getRegisterAssistanceMessage(
+        provider: string,
+        assistance: string,
+        nonce: BigNumberish,
+        chainId: BigNumberish
+    ): Uint8Array {
+        const encodedResult = defaultAbiCoder.encode(
+            ["address", "address", "uint256", "uint256"],
+            [provider, assistance, chainId, nonce]
         );
         return arrayify(keccak256(encodedResult));
     }

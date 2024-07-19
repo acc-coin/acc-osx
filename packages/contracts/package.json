@@ -22,7 +22,8 @@
         "test:Ledger": "hardhat test test/04-Ledger.test.ts",
         "test:Bridge": "hardhat test test/05-Bridge.test.ts",
         "test:ShopId": "hardhat test test/06-ShopId.test.ts",
-        "test:PhoneLink": "hardhat test test/07-PhoneLink.test.ts"
+        "test:PhoneLink": "hardhat test test/07-PhoneLink.test.ts",
+        "test:Provider": "hardhat test test/08-Ledger-Provider.test.ts"
     },
     "repository": {
         "type": "git",

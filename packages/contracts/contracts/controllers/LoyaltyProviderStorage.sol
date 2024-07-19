@@ -15,6 +15,7 @@ contract LoyaltyProviderStorage {
     ICurrencyRate internal currencyRateContract;
     IShop internal shopContract;
     ILedger internal ledgerContract;
+    address internal systemAccount;
 
     mapping(string => bool) internal purchases;
 

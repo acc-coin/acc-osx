@@ -68,4 +68,8 @@ interface ILedger {
     function burnUnPayablePoint(bytes32 _phone, uint256 _amount) external;
 
     function burnPoint(address _account, uint256 _amount) external;
+
+    function isProvider(address _account) external view returns (bool);
+
+    function assistantOf(address _account) external view returns (address);
 }
