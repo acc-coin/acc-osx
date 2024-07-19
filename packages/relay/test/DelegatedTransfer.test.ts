@@ -158,11 +158,14 @@ describe("Test of delegated transfer", function () {
             signature,
         });
 
+        const fee = await contractManager.sideTokenContract.getProtocolFee();
         expect(response.data.code).to.equal(0, response.data.error?.message);
         expect(response.data.data).to.not.equal(undefined);
         expect(response.data.data.txHash).to.match(/^0x[A-Fa-f0-9]{64}$/i);
 
         expect(await contractManager.sideTokenContract.balanceOf(source.address)).to.deep.equal(balance0.sub(amount));
-        expect(await contractManager.sideTokenContract.balanceOf(target.address)).to.deep.equal(balance1.add(amount));
+        expect(await contractManager.sideTokenContract.balanceOf(target.address)).to.deep.equal(
+            balance1.add(amount).sub(fee)
+        );
     });
 });
