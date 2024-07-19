@@ -518,6 +518,8 @@ export class TokenRouter {
                 tokenBalanceInSideChain
             );
 
+            const defaultCurrencySymbol = await this.contractManager.sideCurrencyRateContract.defaultSymbol();
+
             this.metrics.add("success", 1);
             return res.status(200).json(
                 this.makeResponseData(0, {
@@ -533,7 +535,7 @@ export class TokenRouter {
                             value: tokenAmount.toString(),
                         },
                         currency: {
-                            symbol: this.config.relay.baseCurrency,
+                            symbol: defaultCurrencySymbol,
                             value: pointAmount.toString(),
                         },
                     },
@@ -622,6 +624,7 @@ export class TokenRouter {
             const tokenValueInSideChain = await this.contractManager.sideCurrencyRateContract.convertTokenToPoint(
                 tokenBalanceInSideChain
             );
+            const defaultCurrencySymbol = await this.contractManager.sideCurrencyRateContract.defaultSymbol();
 
             this.metrics.add("success", 1);
             return res.status(200).json(
@@ -638,7 +641,7 @@ export class TokenRouter {
                             value: tokenAmount.toString(),
                         },
                         currency: {
-                            symbol: this.config.relay.baseCurrency,
+                            symbol: defaultCurrencySymbol,
                             value: pointAmount.toString(),
                         },
                     },

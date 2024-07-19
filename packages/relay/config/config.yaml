@@ -94,7 +94,6 @@ relay:
   relayEndpoint: "${RELAY_ENDPOINT}"
   encryptKey: "${RELAY_ENCRYPT_KEY}"
   testMode: ${RELAY_TEST_MODE}
-  baseCurrency: "PHP"
 
 contracts:
   sideChain:

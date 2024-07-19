@@ -209,7 +209,6 @@ export class RelayConfig implements IRelayConfig {
     public relayEndpoint: string;
     public encryptKey: string;
     public testMode: boolean;
-    public baseCurrency: string;
 
     constructor() {
         const defaults = RelayConfig.defaultValue();
@@ -225,7 +224,6 @@ export class RelayConfig implements IRelayConfig {
         this.relayEndpoint = defaults.relayEndpoint;
         this.encryptKey = defaults.encryptKey;
         this.testMode = defaults.testMode;
-        this.baseCurrency = defaults.baseCurrency;
     }
 
     public static defaultValue(): IRelayConfig {
@@ -247,7 +245,6 @@ export class RelayConfig implements IRelayConfig {
             relayEndpoint: "",
             encryptKey: "",
             testMode: false,
-            baseCurrency: "PHP",
         };
     }
 
@@ -263,7 +260,6 @@ export class RelayConfig implements IRelayConfig {
         if (config.relayEndpoint !== undefined) this.relayEndpoint = config.relayEndpoint;
         if (config.encryptKey !== undefined) this.encryptKey = config.encryptKey;
         if (config.testMode !== undefined) this.testMode = config.testMode.toString().toLowerCase() === "true";
-        if (config.baseCurrency !== undefined) this.baseCurrency = config.baseCurrency;
     }
 }
 
@@ -486,7 +482,6 @@ export interface IRelayConfig {
     relayEndpoint: string;
     encryptKey: string;
     testMode: boolean;
-    baseCurrency: string;
 }
 
 export interface IContractsConfig {
