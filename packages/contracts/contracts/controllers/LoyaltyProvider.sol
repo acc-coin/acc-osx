@@ -44,7 +44,8 @@ contract LoyaltyProvider is LoyaltyProviderStorage, Initializable, OwnableUpgrad
         address sender
     );
 
-    event ProvidedLoyaltyPoint(address provider, address receiver, uint256 amount);
+    event ProvidedLoyaltyPointToAddress(address provider, address receiver, uint256 amount);
+    event ProvidedLoyaltyPointToPhone(address provider, bytes32 receiver, uint256 amount);
 
     function initialize(
         address _validatorAddress,
@@ -229,7 +230,12 @@ contract LoyaltyProvider is LoyaltyProviderStorage, Initializable, OwnableUpgrad
         return purchases[_purchaseId];
     }
 
-    function provide(address _provider, address _receiver, uint256 _point, bytes calldata _signature) external {
+    function provideToAddress(
+        address _provider,
+        address _receiver,
+        uint256 _point,
+        bytes calldata _signature
+    ) external {
         require(_provider != systemAccount, "1051");
         require(_receiver != systemAccount, "1052");
         require(ledgerContract.isProvider(_provider), "1054");
@@ -272,6 +278,64 @@ contract LoyaltyProvider is LoyaltyProviderStorage, Initializable, OwnableUpgrad
         );
         ledgerContract.increaseNonce(sender);
 
-        emit ProvidedLoyaltyPoint(_provider, _receiver, _point);
+        emit ProvidedLoyaltyPointToAddress(_provider, _receiver, _point);
+    }
+
+    function provideToPhone(address _provider, bytes32 _phoneHash, uint256 _point, bytes calldata _signature) external {
+        require(_provider != systemAccount, "1051");
+        require(ledgerContract.isProvider(_provider), "1054");
+        require(_point % 1 gwei == 0, "1030");
+
+        address recurve1 = ECDSA.recover(
+            ECDSA.toEthSignedMessageHash(
+                keccak256(abi.encode(_provider, _phoneHash, _point, block.chainid, ledgerContract.nonceOf(_provider)))
+            ),
+            _signature
+        );
+
+        address sender;
+        if (recurve1 == _provider) {
+            sender = _provider;
+        } else {
+            address assistant = ledgerContract.assistantOf(_provider);
+            require(assistant != address(0x0), "1501");
+
+            address recurve2 = ECDSA.recover(
+                ECDSA.toEthSignedMessageHash(
+                    keccak256(
+                        abi.encode(_provider, _phoneHash, _point, block.chainid, ledgerContract.nonceOf(assistant))
+                    )
+                ),
+                _signature
+            );
+            require(recurve2 == assistant, "1501");
+            sender = assistant;
+        }
+
+        address receiver = linkContract.toAddress(_phoneHash);
+        if (receiver == address(0x00)) {
+            ledgerContract.provideUnPayablePoint(
+                _phoneHash,
+                _point,
+                _point,
+                DMS.DEFAULT_CURRENCY_SYMBOL,
+                "",
+                bytes32(0x0),
+                _provider
+            );
+        } else {
+            ledgerContract.providePoint(
+                receiver,
+                _point,
+                _point,
+                DMS.DEFAULT_CURRENCY_SYMBOL,
+                "",
+                bytes32(0x0),
+                _provider
+            );
+        }
+        ledgerContract.increaseNonce(sender);
+
+        emit ProvidedLoyaltyPointToPhone(_provider, _phoneHash, _point);
     }
 }

@@ -635,7 +635,7 @@ export class ContractUtils {
         return arrayify(keccak256(encodedResult));
     }
 
-    public static getProvidePointMessage(
+    public static getProvidePointToAddressMessage(
         provider: string,
         receiver: string,
         amount: BigNumberish,
@@ -644,6 +644,20 @@ export class ContractUtils {
     ): Uint8Array {
         const encodedResult = defaultAbiCoder.encode(
             ["address", "address", "uint256", "uint256", "uint256"],
+            [provider, receiver, amount, chainId, nonce]
+        );
+        return arrayify(keccak256(encodedResult));
+    }
+
+    public static getProvidePointToPhoneMessage(
+        provider: string,
+        receiver: BytesLike,
+        amount: BigNumberish,
+        nonce: BigNumberish,
+        chainId: BigNumberish
+    ): Uint8Array {
+        const encodedResult = defaultAbiCoder.encode(
+            ["address", "bytes32", "uint256", "uint256", "uint256"],
             [provider, receiver, amount, chainId, nonce]
         );
         return arrayify(keccak256(encodedResult));

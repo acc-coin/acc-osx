@@ -182,7 +182,7 @@ describe("Test for Ledger", () => {
         it("Provide point - system account ", async () => {
             const transferAmount = Amount.make(100, 18).value;
             const nonce = await ledgerContract.nonceOf(deployments.accounts.system.address);
-            const message = ContractUtils.getProvidePointMessage(
+            const message = ContractUtils.getProvidePointToAddressMessage(
                 deployments.accounts.system.address,
                 deployments.accounts.users[1].address,
                 transferAmount,
@@ -193,7 +193,7 @@ describe("Test for Ledger", () => {
             await expect(
                 providerContract
                     .connect(deployments.accounts.certifiers[0])
-                    .provide(
+                    .provideToAddress(
                         deployments.accounts.system.address,
                         deployments.accounts.users[1].address,
                         transferAmount,
@@ -205,7 +205,7 @@ describe("Test for Ledger", () => {
         it("Provide point - system account ", async () => {
             const transferAmount = Amount.make(100, 18).value;
             const nonce = await ledgerContract.nonceOf(deployments.accounts.users[0].address);
-            const message = ContractUtils.getProvidePointMessage(
+            const message = ContractUtils.getProvidePointToAddressMessage(
                 deployments.accounts.users[0].address,
                 deployments.accounts.system.address,
                 transferAmount,
@@ -216,7 +216,7 @@ describe("Test for Ledger", () => {
             await expect(
                 providerContract
                     .connect(deployments.accounts.certifiers[0])
-                    .provide(
+                    .provideToAddress(
                         deployments.accounts.users[0].address,
                         deployments.accounts.system.address,
                         transferAmount,
@@ -228,7 +228,7 @@ describe("Test for Ledger", () => {
         it("Provide point - Not Provider", async () => {
             const providePoint = Amount.make(100, 18).value;
             const nonce = await ledgerContract.nonceOf(deployments.accounts.users[0].address);
-            const message = ContractUtils.getProvidePointMessage(
+            const message = ContractUtils.getProvidePointToAddressMessage(
                 deployments.accounts.users[0].address,
                 deployments.accounts.users[1].address,
                 providePoint,
@@ -239,7 +239,7 @@ describe("Test for Ledger", () => {
             await expect(
                 providerContract
                     .connect(deployments.accounts.certifiers[0])
-                    .provide(
+                    .provideToAddress(
                         deployments.accounts.users[0].address,
                         deployments.accounts.users[1].address,
                         providePoint,
@@ -281,7 +281,7 @@ describe("Test for Ledger", () => {
             const pointBalance = await currencyContract.convertTokenToPoint(tokenBalance);
             const providePoint = pointBalance.mul(2);
             const nonce = await ledgerContract.nonceOf(deployments.accounts.users[0].address);
-            const message = ContractUtils.getProvidePointMessage(
+            const message = ContractUtils.getProvidePointToAddressMessage(
                 deployments.accounts.users[0].address,
                 deployments.accounts.users[1].address,
                 providePoint,
@@ -292,7 +292,7 @@ describe("Test for Ledger", () => {
             await expect(
                 providerContract
                     .connect(deployments.accounts.certifiers[0])
-                    .provide(
+                    .provideToAddress(
                         deployments.accounts.users[0].address,
                         deployments.accounts.users[1].address,
                         providePoint,
@@ -304,7 +304,7 @@ describe("Test for Ledger", () => {
         it("Provide point - Invalid signature", async () => {
             const providePoint = Amount.make(100, 18).value;
             const nonce = await ledgerContract.nonceOf(deployments.accounts.users[0].address);
-            const message = ContractUtils.getProvidePointMessage(
+            const message = ContractUtils.getProvidePointToAddressMessage(
                 deployments.accounts.users[0].address,
                 deployments.accounts.users[1].address,
                 providePoint,
@@ -315,7 +315,7 @@ describe("Test for Ledger", () => {
             await expect(
                 providerContract
                     .connect(deployments.accounts.certifiers[0])
-                    .provide(
+                    .provideToAddress(
                         deployments.accounts.users[0].address,
                         deployments.accounts.users[1].address,
                         providePoint,
@@ -327,7 +327,7 @@ describe("Test for Ledger", () => {
         it("Provide point", async () => {
             const providePoint = Amount.make(100, 18).value;
             const nonce = await ledgerContract.nonceOf(deployments.accounts.users[0].address);
-            const message = ContractUtils.getProvidePointMessage(
+            const message = ContractUtils.getProvidePointToAddressMessage(
                 deployments.accounts.users[0].address,
                 deployments.accounts.users[1].address,
                 providePoint,
@@ -338,19 +338,21 @@ describe("Test for Ledger", () => {
             await expect(
                 providerContract
                     .connect(deployments.accounts.certifiers[0])
-                    .provide(
+                    .provideToAddress(
                         deployments.accounts.users[0].address,
                         deployments.accounts.users[1].address,
                         providePoint,
                         signature
                     )
             )
-                .emit(providerContract, "ProvidedLoyaltyPoint")
+                .emit(providerContract, "ProvidedLoyaltyPointToAddress")
                 .withNamedArgs({
                     provider: deployments.accounts.users[0].address,
                     receiver: deployments.accounts.users[1].address,
                     amount: providePoint,
                 });
+            const balance = await ledgerContract.pointBalanceOf(deployments.accounts.users[1].address);
+            expect(balance).equal(providePoint);
         });
 
         it("Register Assistance", async () => {
@@ -387,9 +389,9 @@ describe("Test for Ledger", () => {
             const providePoint = Amount.make(100, 18).value;
             const assistance = deployments.accounts.users[2];
             const provider = deployments.accounts.users[0];
-            const receiver = deployments.accounts.users[1];
+            const receiver = deployments.accounts.users[3];
             const nonce = await ledgerContract.nonceOf(assistance.address);
-            const message = ContractUtils.getProvidePointMessage(
+            const message = ContractUtils.getProvidePointToAddressMessage(
                 provider.address,
                 receiver.address,
                 providePoint,
@@ -400,14 +402,43 @@ describe("Test for Ledger", () => {
             await expect(
                 providerContract
                     .connect(deployments.accounts.certifiers[0])
-                    .provide(provider.address, receiver.address, providePoint, signature)
+                    .provideToAddress(provider.address, receiver.address, providePoint, signature)
             )
-                .emit(providerContract, "ProvidedLoyaltyPoint")
+                .emit(providerContract, "ProvidedLoyaltyPointToAddress")
                 .withNamedArgs({
                     provider: provider.address,
                     receiver: receiver.address,
                     amount: providePoint,
                 });
+            const balance = await ledgerContract.pointBalanceOf(receiver.address);
+            expect(balance).equal(providePoint);
+        });
+
+        it("Provide point - phone", async () => {
+            const providePoint = Amount.make(100, 18).value;
+            const nonce = await ledgerContract.nonceOf(deployments.accounts.users[0].address);
+            const message = ContractUtils.getProvidePointToPhoneMessage(
+                deployments.accounts.users[0].address,
+                phoneHashes[0],
+                providePoint,
+                nonce,
+                hre.ethers.provider.network.chainId
+            );
+            const signature = await ContractUtils.signMessage(deployments.accounts.users[0], message);
+            await expect(
+                providerContract
+                    .connect(deployments.accounts.certifiers[0])
+                    .provideToPhone(deployments.accounts.users[0].address, phoneHashes[0], providePoint, signature)
+            )
+                .emit(providerContract, "ProvidedLoyaltyPointToPhone")
+                .withNamedArgs({
+                    provider: deployments.accounts.users[0].address,
+                    receiver: phoneHashes[0],
+                    amount: providePoint,
+                });
+
+            const balance = await ledgerContract.unPayablePointBalanceOf(phoneHashes[0]);
+            expect(balance).equal(providePoint);
         });
     });
 });
