@@ -274,7 +274,12 @@ describe("Test of Server", function () {
                     account: userAccount,
                     phone: phoneHash,
                     sender: deployments.accounts.system.address,
+                    signature: "",
                 };
+                purchaseParam.signature = await ContractUtils.getPurchaseSignature(
+                    deployments.accounts.system,
+                    purchaseParam
+                );
                 const purchaseMessage = ContractUtils.getPurchasesMessage(
                     0,
                     [purchaseParam],
@@ -747,7 +752,12 @@ describe("Test of Server", function () {
                     account: userAccount,
                     phone: phoneHash,
                     sender: deployments.accounts.system.address,
+                    signature: "",
                 };
+                purchaseParam.signature = await ContractUtils.getPurchaseSignature(
+                    deployments.accounts.system,
+                    purchaseParam
+                );
                 const purchaseMessage = ContractUtils.getPurchasesMessage(
                     0,
                     [purchaseParam],
@@ -1147,7 +1157,12 @@ describe("Test of Server", function () {
                     account: userAccount,
                     phone: phoneHash,
                     sender: deployments.accounts.system.address,
+                    signature: "",
                 };
+                purchaseParam.signature = await ContractUtils.getPurchaseSignature(
+                    deployments.accounts.system,
+                    purchaseParam
+                );
                 const purchaseMessage = ContractUtils.getPurchasesMessage(
                     0,
                     [purchaseParam],
@@ -1636,7 +1651,12 @@ describe("Test of Server", function () {
                 account: userAccount,
                 phone: phoneHash,
                 sender: deployments.accounts.system.address,
+                signature: "",
             };
+            purchaseParam.signature = await ContractUtils.getPurchaseSignature(
+                deployments.accounts.system,
+                purchaseParam
+            );
             const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam], contractManager.sideChainId);
             const signatures = await Promise.all(
                 deployments.accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage))

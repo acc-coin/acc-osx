@@ -44,6 +44,7 @@ interface IAccount {
     bridgeValidators: Wallet[];
     certifiers: Wallet[];
     tokenOwners: Wallet[];
+    publisher: Wallet;
 }
 
 type FnDeployer = (accounts: IAccount, deployment: Deployments) => Promise<any>;
@@ -94,6 +95,8 @@ class Deployments {
             tokenOwner1,
             tokenOwner2,
             tokenOwner3,
+
+            publisher,
 
             certifier01,
             certifier02,
@@ -147,6 +150,7 @@ class Deployments {
             ],
 
             tokenOwners: [tokenOwner1, tokenOwner2, tokenOwner3],
+            publisher,
         };
     }
 

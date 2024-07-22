@@ -59,6 +59,7 @@ interface IAccount {
     bridgeValidators: Wallet[];
     certifiers: Wallet[];
     tokenOwners: Wallet[];
+    publisher: Wallet;
 }
 
 type FnDeployer = (accounts: IAccount, deployment: Deployments) => Promise<any>;
@@ -107,6 +108,7 @@ class Deployments {
             bridgeValidator1,
             bridgeValidator2,
             bridgeValidator3,
+            publisher,
             tokenOwner1,
             tokenOwner2,
             tokenOwner3,
@@ -162,6 +164,7 @@ class Deployments {
             ],
 
             tokenOwners: [tokenOwner1, tokenOwner2, tokenOwner3],
+            publisher,
         };
     }
 
@@ -901,6 +904,22 @@ async function deployLedger(accounts: IAccount, deployment: Deployments) {
             console.log(`Deposit liquidity token (tx: ${tx1.hash})...`);
             // await tx1.wait();
         }
+
+        {
+            const nonce = await contract.nonceOf(accounts.system.address);
+            const message = ContractUtils.getRegisterAssistanceMessage(
+                accounts.system.address,
+                accounts.publisher.address,
+                nonce,
+                hre.ethers.provider.network.chainId
+            );
+            const signature = await ContractUtils.signMessage(accounts.system, message);
+            const tx = await contract
+                .connect(accounts.certifiers[0])
+                .registerAssistant(accounts.system.address, accounts.publisher.address, signature);
+            console.log(`Register assistant address of system (tx: ${tx.hash})...`);
+            // await tx.wait();
+        }
     }
 }
 
@@ -1024,18 +1043,25 @@ async function storeSamplePurchase1(accounts: IAccount, deployment: Deployments)
     const purchaseAmount = Amount.make(100_000_000, 18).value;
     const loyaltyAmount = purchaseAmount.mul(5).div(100);
     const phoneHash = ContractUtils.getPhoneHash("");
-    const purchaseParams = users.slice(0, 50).map((m: any) => {
-        return {
-            purchaseId: getPurchaseId(),
-            amount: purchaseAmount,
-            loyalty: loyaltyAmount,
-            currency: "php",
-            shopId: shops[shops.length - 1].shopId,
-            account: m.address,
-            phone: phoneHash,
-            sender: accounts.system.address,
-        };
-    });
+
+    const purchaseParams = await Promise.all(
+        users.slice(0, 50).map(async (m: any) => {
+            const purchaseItem = {
+                purchaseId: getPurchaseId(),
+                amount: purchaseAmount,
+                loyalty: loyaltyAmount,
+                currency: "php",
+                shopId: shops[shops.length - 1].shopId,
+                account: m.address,
+                phone: phoneHash,
+                sender: accounts.system.address,
+                signature: "",
+            };
+            purchaseItem.signature = await ContractUtils.getPurchaseSignature(accounts.publisher, purchaseItem);
+            return purchaseItem;
+        })
+    );
+
     const chainId = (await hre.ethers.provider.getNetwork()).chainId;
     const purchaseMessage = ContractUtils.getPurchasesMessage(0, purchaseParams, chainId);
     const signatures = await Promise.all(accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage)));
@@ -1047,18 +1073,24 @@ async function storeSamplePurchase1(accounts: IAccount, deployment: Deployments)
     await tx1.wait();
 
     console.log(`Store Sample Purchase 1 - 2/4 ...`);
-    const purchaseParams2 = users.slice(50, 100).map((m: any) => {
-        return {
-            purchaseId: getPurchaseId(),
-            amount: purchaseAmount,
-            loyalty: loyaltyAmount,
-            currency: "php",
-            shopId: shops[shops.length - 1].shopId,
-            account: m.address,
-            phone: ContractUtils.getPhoneHash(""),
-            sender: accounts.system.address,
-        };
-    });
+    const purchaseParams2 = await Promise.all(
+        users.slice(50, 100).map(async (m: any) => {
+            const purchaseItem = {
+                purchaseId: getPurchaseId(),
+                amount: purchaseAmount,
+                loyalty: loyaltyAmount,
+                currency: "php",
+                shopId: shops[shops.length - 1].shopId,
+                account: m.address,
+                phone: phoneHash,
+                sender: accounts.system.address,
+                signature: "",
+            };
+            purchaseItem.signature = await ContractUtils.getPurchaseSignature(accounts.publisher, purchaseItem);
+            return purchaseItem;
+        })
+    );
+
     const purchaseMessage2 = ContractUtils.getPurchasesMessage(0, purchaseParams2, chainId);
     const signatures2 = await Promise.all(
         accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage2))
@@ -1071,18 +1103,23 @@ async function storeSamplePurchase1(accounts: IAccount, deployment: Deployments)
     await tx2.wait();
 
     console.log(`Store Sample Purchase 1 - 3/4 ...`);
-    const purchaseParams3 = users.slice(0, 50).map((m: any) => {
-        return {
-            purchaseId: getPurchaseId(),
-            amount: purchaseAmount,
-            loyalty: loyaltyAmount,
-            currency: "php",
-            shopId: shops[shops.length - 1].shopId,
-            account: AddressZero,
-            phone: ContractUtils.getPhoneHash(m.phone),
-            sender: accounts.system.address,
-        };
-    });
+    const purchaseParams3 = await Promise.all(
+        users.slice(0, 50).map(async (m: any) => {
+            const purchaseItem = {
+                purchaseId: getPurchaseId(),
+                amount: purchaseAmount,
+                loyalty: loyaltyAmount,
+                currency: "php",
+                shopId: shops[shops.length - 1].shopId,
+                account: AddressZero,
+                phone: ContractUtils.getPhoneHash(m.phone),
+                sender: accounts.system.address,
+                signature: "",
+            };
+            purchaseItem.signature = await ContractUtils.getPurchaseSignature(accounts.publisher, purchaseItem);
+            return purchaseItem;
+        })
+    );
     const purchaseMessage3 = ContractUtils.getPurchasesMessage(0, purchaseParams3, chainId);
     const signatures3 = await Promise.all(
         accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage3))
@@ -1095,18 +1132,23 @@ async function storeSamplePurchase1(accounts: IAccount, deployment: Deployments)
     await tx3.wait();
 
     console.log(`Store Sample Purchase 1 - 4/4 ...`);
-    const purchaseParams4 = users.slice(50, 100).map((m: any) => {
-        return {
-            purchaseId: getPurchaseId(),
-            amount: purchaseAmount,
-            loyalty: loyaltyAmount,
-            currency: "php",
-            shopId: shops[shops.length - 1].shopId,
-            account: AddressZero,
-            phone: ContractUtils.getPhoneHash(m.phone),
-            sender: accounts.system.address,
-        };
-    });
+    const purchaseParams4 = await Promise.all(
+        users.slice(50, 100).map(async (m: any) => {
+            const purchaseItem = {
+                purchaseId: getPurchaseId(),
+                amount: purchaseAmount,
+                loyalty: loyaltyAmount,
+                currency: "php",
+                shopId: shops[shops.length - 1].shopId,
+                account: AddressZero,
+                phone: ContractUtils.getPhoneHash(m.phone),
+                sender: accounts.system.address,
+                signature: "",
+            };
+            purchaseItem.signature = await ContractUtils.getPurchaseSignature(accounts.publisher, purchaseItem);
+            return purchaseItem;
+        })
+    );
     const purchaseMessage4 = ContractUtils.getPurchasesMessage(0, purchaseParams4, chainId);
     const signatures4 = await Promise.all(
         accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage4))
@@ -1133,18 +1175,24 @@ async function storeSamplePurchase2(accounts: IAccount, deployment: Deployments)
     const purchaseAmount = Amount.make(100_000_000, 18).value;
     const loyaltyAmount = purchaseAmount.mul(5).div(100);
     const phoneHash = ContractUtils.getPhoneHash("");
-    const purchaseParams = users.map((m: any) => {
-        return {
-            purchaseId: getPurchaseId(),
-            amount: purchaseAmount,
-            loyalty: loyaltyAmount,
-            currency: "php",
-            shopId: shops[shops.length - 1].shopId,
-            account: m.address,
-            phone: phoneHash,
-            sender: accounts.system.address,
-        };
-    });
+
+    const purchaseParams = await Promise.all(
+        users.map(async (m: any) => {
+            const purchaseItem = {
+                purchaseId: getPurchaseId(),
+                amount: purchaseAmount,
+                loyalty: loyaltyAmount,
+                currency: "php",
+                shopId: shops[shops.length - 1].shopId,
+                account: m.address,
+                phone: phoneHash,
+                sender: accounts.system.address,
+                signature: "",
+            };
+            purchaseItem.signature = await ContractUtils.getPurchaseSignature(accounts.publisher, purchaseItem);
+            return purchaseItem;
+        })
+    );
     const chainId = (await hre.ethers.provider.getNetwork()).chainId;
     const purchaseMessage = ContractUtils.getPurchasesMessage(0, purchaseParams, chainId);
     const signatures = await Promise.all(accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage)));
@@ -1156,18 +1204,24 @@ async function storeSamplePurchase2(accounts: IAccount, deployment: Deployments)
     await tx1.wait();
 
     console.log(`Store Sample Purchase 2 - 2/2...`);
-    const purchaseParams3 = users.map((m: any) => {
-        return {
-            purchaseId: getPurchaseId(),
-            amount: purchaseAmount,
-            loyalty: loyaltyAmount,
-            currency: "php",
-            shopId: shops[shops.length - 1].shopId,
-            account: AddressZero,
-            phone: ContractUtils.getPhoneHash(m.phone),
-            sender: accounts.system.address,
-        };
-    });
+
+    const purchaseParams3 = await Promise.all(
+        users.map(async (m: any) => {
+            const purchaseItem = {
+                purchaseId: getPurchaseId(),
+                amount: purchaseAmount,
+                loyalty: loyaltyAmount,
+                currency: "php",
+                shopId: shops[shops.length - 1].shopId,
+                account: AddressZero,
+                phone: ContractUtils.getPhoneHash(m.phone),
+                sender: accounts.system.address,
+                signature: "",
+            };
+            purchaseItem.signature = await ContractUtils.getPurchaseSignature(accounts.publisher, purchaseItem);
+            return purchaseItem;
+        })
+    );
     const purchaseMessage3 = ContractUtils.getPurchasesMessage(0, purchaseParams3, chainId);
     const signatures3 = await Promise.all(
         accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage3))

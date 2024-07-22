@@ -200,18 +200,26 @@ describe("Test of Delegator", function () {
             const phoneHash = ContractUtils.getPhoneHash("");
             const purchaseAmount = Amount.make(100_000_000, 18).value;
             const loyaltyAmount = purchaseAmount.mul(10).div(100);
-            const purchaseParam = userData.map((m) => {
-                return {
-                    purchaseId: getPurchaseId(),
-                    amount: purchaseAmount,
-                    loyalty: loyaltyAmount,
-                    currency: "krw",
-                    shopId: shopData[0].shopId,
-                    account: m.address,
-                    phone: phoneHash,
-                    sender: deployments.accounts.system.address,
-                };
-            });
+            const purchaseParam = await Promise.all(
+                userData.map(async (m) => {
+                    const purchaseItem = {
+                        purchaseId: getPurchaseId(),
+                        amount: purchaseAmount,
+                        loyalty: loyaltyAmount,
+                        currency: "krw",
+                        shopId: shopData[0].shopId,
+                        account: m.address,
+                        phone: phoneHash,
+                        sender: deployments.accounts.system.address,
+                        signature: "",
+                    };
+                    purchaseItem.signature = await ContractUtils.getPurchaseSignature(
+                        deployments.accounts.system,
+                        purchaseItem
+                    );
+                    return purchaseItem;
+                })
+            );
             const purchaseMessage = ContractUtils.getPurchasesMessage(0, purchaseParam, contractManager.sideChainId);
             const signatures = await Promise.all(
                 deployments.accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage))

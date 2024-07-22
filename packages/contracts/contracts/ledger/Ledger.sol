@@ -91,6 +91,7 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         __Ownable_init_unchained();
 
         systemAccount = managements.system;
+        providers[systemAccount] = true;
         paymentFeeAccount = managements.paymentFee;
         protocolFeeAccount = managements.protocolFee;
 

@@ -30,6 +30,7 @@ contract LoyaltyProvider is LoyaltyProviderStorage, Initializable, OwnableUpgrad
         address account;
         bytes32 phone;
         address sender;
+        bytes signature;
     }
 
     /// @notice 검증자가 추가될 때 발생되는 이벤트
@@ -161,6 +162,24 @@ contract LoyaltyProvider is LoyaltyProviderStorage, Initializable, OwnableUpgrad
         for (uint256 i = 0; i < _data.length; i++) {
             PurchaseData memory data = _data[i];
             if (data.loyalty > 0) {
+                bytes32 purchaseDataHash = keccak256(
+                    abi.encode(
+                        data.purchaseId,
+                        data.amount,
+                        data.loyalty,
+                        data.currency,
+                        data.shopId,
+                        data.account,
+                        data.phone,
+                        data.sender,
+                        block.chainid
+                    )
+                );
+                address recover = ECDSA.recover(ECDSA.toEthSignedMessageHash(purchaseDataHash), data.signature);
+                address assistant = ledgerContract.assistantOf(data.sender);
+                if ((assistant == address(0x0)) && (recover != data.sender)) continue;
+                if ((assistant != address(0x0)) && (recover != assistant)) continue;
+
                 uint256 loyaltyValue = data.loyalty;
                 uint256 loyaltyPoint = currencyRateContract.convertCurrencyToPoint(loyaltyValue, data.currency);
 

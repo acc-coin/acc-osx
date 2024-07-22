@@ -264,7 +264,12 @@ describe("Test for Ledger", () => {
                         account: userAccount,
                         phone: phoneHash,
                         sender: deployments.accounts.system.address,
+                        signature: "",
                     };
+                    purchaseParam.signature = await ContractUtils.getPurchaseSignature(
+                        deployments.accounts.system,
+                        purchaseParam
+                    );
                     const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                     const signatures = await Promise.all(
                         deployments.accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage))
@@ -303,7 +308,12 @@ describe("Test for Ledger", () => {
                             account: userAccount,
                             phone: phoneHash,
                             sender: deployments.accounts.system.address,
+                            signature: "",
                         };
+                        purchaseParam.signature = await ContractUtils.getPurchaseSignature(
+                            deployments.accounts.system,
+                            purchaseParam
+                        );
                         const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                         const signatures = await Promise.all(
                             deployments.accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage))
@@ -346,7 +356,12 @@ describe("Test for Ledger", () => {
                             account: userAccount,
                             phone: phoneHash,
                             sender: deployments.accounts.system.address,
+                            signature: "",
                         };
+                        purchaseParam.signature = await ContractUtils.getPurchaseSignature(
+                            deployments.accounts.system,
+                            purchaseParam
+                        );
                         const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                         const signatures = await Promise.all(
                             deployments.accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage))
@@ -437,7 +452,12 @@ describe("Test for Ledger", () => {
                     account: userAccount,
                     phone: phoneHash,
                     sender: deployments.accounts.system.address,
+                    signature: "",
                 };
+                purchaseParam.signature = await ContractUtils.getPurchaseSignature(
+                    deployments.accounts.system,
+                    purchaseParam
+                );
                 const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                 const signatures = await Promise.all(
                     deployments.accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage))
@@ -533,7 +553,12 @@ describe("Test for Ledger", () => {
                     account: userAccount,
                     phone: phoneHash,
                     sender: deployments.accounts.system.address,
+                    signature: "",
                 };
+                purchaseParam.signature = await ContractUtils.getPurchaseSignature(
+                    deployments.accounts.system,
+                    purchaseParam
+                );
                 const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                 const signatures = await Promise.all(
                     deployments.accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage))
@@ -644,7 +669,12 @@ describe("Test for Ledger", () => {
                     account: userAccount,
                     phone: phoneHash,
                     sender: deployments.accounts.system.address,
+                    signature: "",
                 };
+                purchaseParam.signature = await ContractUtils.getPurchaseSignature(
+                    deployments.accounts.system,
+                    purchaseParam
+                );
                 const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                 const signatures = await Promise.all(
                     deployments.accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage))
@@ -719,7 +749,12 @@ describe("Test for Ledger", () => {
                     account: userAccount,
                     phone: phoneHash,
                     sender: deployments.accounts.system.address,
+                    signature: "",
                 };
+                purchaseParam.signature = await ContractUtils.getPurchaseSignature(
+                    deployments.accounts.system,
+                    purchaseParam
+                );
                 const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                 const signatures = await Promise.all(
                     deployments.accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage))
@@ -813,7 +848,12 @@ describe("Test for Ledger", () => {
                     account: userAccount,
                     phone: phoneHash,
                     sender: deployments.accounts.system.address,
+                    signature: "",
                 };
+                purchaseParam.signature = await ContractUtils.getPurchaseSignature(
+                    deployments.accounts.system,
+                    purchaseParam
+                );
                 const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                 const signatures = await Promise.all(
                     deployments.accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage))
@@ -916,7 +956,12 @@ describe("Test for Ledger", () => {
                     account: userAccount,
                     phone: phoneHash,
                     sender: deployments.accounts.system.address,
+                    signature: "",
                 };
+                purchaseParam.signature = await ContractUtils.getPurchaseSignature(
+                    deployments.accounts.system,
+                    purchaseParam
+                );
                 const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                 const signatures = await Promise.all(
                     deployments.accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage))
@@ -1206,7 +1251,7 @@ describe("Test for Ledger", () => {
             },
         ];
 
-        const numPurchases = 64;
+        const numPurchases = 48;
 
         before("Set Shop ID", async () => {
             for (const elem of shopData) {
@@ -1225,7 +1270,7 @@ describe("Test for Ledger", () => {
                 const purchaseAmount = Amount.make(10000, 18).value;
                 const loyaltyAmount = purchaseAmount.mul(1).div(100);
                 const userAccount = userData[0].address.trim();
-                purchases.push({
+                const purchaseItem = {
                     purchaseId: getPurchaseId(),
                     amount: purchaseAmount,
                     loyalty: loyaltyAmount,
@@ -1234,7 +1279,13 @@ describe("Test for Ledger", () => {
                     account: userAccount,
                     phone: phoneHash,
                     sender: deployments.accounts.system.address,
-                });
+                    signature: "",
+                };
+                purchaseItem.signature = await ContractUtils.getPurchaseSignature(
+                    deployments.accounts.system,
+                    purchaseItem
+                );
+                purchases.push(purchaseItem);
             }
 
             const purchaseMessage = ContractUtils.getPurchasesMessage(0, purchases);
@@ -1619,7 +1670,12 @@ describe("Test for Ledger", () => {
                         account: userAccount,
                         phone: phoneHash,
                         sender: deployments.accounts.system.address,
+                        signature: "",
                     };
+                    purchaseParam.signature = await ContractUtils.getPurchaseSignature(
+                        deployments.accounts.system,
+                        purchaseParam
+                    );
                     const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                     const signatures = await Promise.all(
                         deployments.accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage))
@@ -1863,7 +1919,12 @@ describe("Test for Ledger", () => {
                         account: userAccount,
                         phone: phoneHash,
                         sender: deployments.accounts.system.address,
+                        signature: "",
                     };
+                    purchaseParam.signature = await ContractUtils.getPurchaseSignature(
+                        deployments.accounts.system,
+                        purchaseParam
+                    );
                     const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                     const signatures = await Promise.all(
                         deployments.accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage))
@@ -2190,7 +2251,12 @@ describe("Test for Ledger", () => {
                         account: userAccount,
                         phone: phoneHash,
                         sender: deployments.accounts.system.address,
+                        signature: "",
                     };
+                    purchaseParam.signature = await ContractUtils.getPurchaseSignature(
+                        deployments.accounts.system,
+                        purchaseParam
+                    );
                     const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
                     const signatures = await Promise.all(
                         deployments.accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage))
@@ -2654,7 +2720,12 @@ describe("Test for Ledger", () => {
                 account: userAccount,
                 phone: phoneHash,
                 sender: deployments.accounts.system.address,
+                signature: "",
             };
+            purchaseParam.signature = await ContractUtils.getPurchaseSignature(
+                deployments.accounts.system,
+                purchaseParam
+            );
             const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam]);
             const signatures = await Promise.all(
                 deployments.accounts.validators.map((m) => ContractUtils.signMessage(m, purchaseMessage))

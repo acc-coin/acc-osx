@@ -104,6 +104,8 @@ export class Deployments {
             tokenOwner2,
             tokenOwner3,
 
+            publisher,
+
             certifier01,
             certifier02,
             certifier03,

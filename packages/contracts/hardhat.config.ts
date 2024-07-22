@@ -366,6 +366,17 @@ function getAccounts() {
     }
 
     if (
+        process.env.PUBLISHER_KEY !== undefined &&
+        process.env.PUBLISHER_KEY.trim() !== "" &&
+        reg_bytes64.test(process.env.PUBLISHER_KEY)
+    ) {
+        accounts.push(process.env.PUBLISHER_KEY);
+    } else {
+        process.env.PUBLISHER_KEY = Wallet.createRandom().privateKey;
+        accounts.push(process.env.PUBLISHER_KEY);
+    }
+
+    if (
         process.env.CERTIFIER01 !== undefined &&
         process.env.CERTIFIER01.trim() !== "" &&
         reg_bytes64.test(process.env.CERTIFIER01)

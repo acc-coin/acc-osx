@@ -274,7 +274,12 @@ describe("Test of Server", function () {
                     account: userAccount,
                     phone: phoneHash,
                     sender: deployments.accounts.system.address,
+                    signature: "",
                 };
+                purchaseParam.signature = await ContractUtils.getPurchaseSignature(
+                    deployments.accounts.system,
+                    purchaseParam
+                );
                 const purchaseMessage = ContractUtils.getPurchasesMessage(
                     0,
                     [purchaseParam],

@@ -676,6 +676,37 @@ export class ContractUtils {
         return arrayify(keccak256(encodedResult));
     }
 
+    public static async getPurchaseSignature(
+        signer: Signer,
+        purchase: {
+            purchaseId: string;
+            amount: BigNumberish;
+            loyalty: BigNumberish;
+            currency: string;
+            shopId: BytesLike;
+            account: string;
+            phone: BytesLike;
+            sender: string;
+        },
+        chainId?: BigNumberish
+    ): Promise<string> {
+        const encodedData = defaultAbiCoder.encode(
+            ["string", "uint256", "uint256", "string", "bytes32", "address", "bytes32", "address", "uint256"],
+            [
+                purchase.purchaseId,
+                purchase.amount,
+                purchase.loyalty,
+                purchase.currency,
+                purchase.shopId,
+                purchase.account,
+                purchase.phone,
+                purchase.sender,
+                chainId ? chainId : hre.ethers.provider.network.chainId,
+            ]
+        );
+        return signer.signMessage(arrayify(keccak256(encodedData)));
+    }
+
     public static async signMessage(signer: Signer, message: Uint8Array): Promise<string> {
         return signer.signMessage(message);
     }
