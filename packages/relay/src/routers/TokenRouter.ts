@@ -494,7 +494,15 @@ export class TokenRouter {
         }
 
         try {
-            const account: string = String(req.params.account).trim();
+            let account: string = String(req.params.account).trim();
+            if (ContractUtils.isTemporaryAccount(account)) {
+                const realAccount = await this.storage.getRealAccountOnTemporary(account);
+                if (realAccount === undefined) {
+                    return res.status(200).json(ResponseMessage.getErrorMessage("2004"));
+                } else {
+                    account = realAccount;
+                }
+            }
 
             const symbol = await this.contractManager.sideTokenContract.symbol();
             const name = await this.contractManager.sideTokenContract.name();
