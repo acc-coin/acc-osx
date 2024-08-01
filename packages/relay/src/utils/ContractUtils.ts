@@ -743,6 +743,47 @@ export class ContractUtils {
         return signer.signMessage(arrayify(keccak256(encodedData)));
     }
 
+    public static getProvidePointToAddressMessage(
+        provider: string,
+        receiver: string,
+        amount: BigNumberish,
+        nonce: BigNumberish,
+        chainId?: BigNumberish
+    ): Uint8Array {
+        const encodedResult = defaultAbiCoder.encode(
+            ["address", "address", "uint256", "uint256", "uint256"],
+            [provider, receiver, amount, chainId ? chainId : hre.ethers.provider.network.chainId, nonce]
+        );
+        return arrayify(keccak256(encodedResult));
+    }
+
+    public static getProvidePointToPhoneMessage(
+        provider: string,
+        receiver: BytesLike,
+        amount: BigNumberish,
+        nonce: BigNumberish,
+        chainId?: BigNumberish
+    ): Uint8Array {
+        const encodedResult = defaultAbiCoder.encode(
+            ["address", "bytes32", "uint256", "uint256", "uint256"],
+            [provider, receiver, amount, chainId ? chainId : hre.ethers.provider.network.chainId, nonce]
+        );
+        return arrayify(keccak256(encodedResult));
+    }
+
+    public static getRegisterAssistanceMessage(
+        provider: string,
+        assistance: string,
+        nonce: BigNumberish,
+        chainId?: BigNumberish
+    ): Uint8Array {
+        const encodedResult = defaultAbiCoder.encode(
+            ["address", "address", "uint256", "uint256"],
+            [provider, assistance, chainId ? chainId : hre.ethers.provider.network.chainId, nonce]
+        );
+        return arrayify(keccak256(encodedResult));
+    }
+
     public static async signMessage(signer: Signer, message: Uint8Array): Promise<string> {
         return signer.signMessage(message);
     }

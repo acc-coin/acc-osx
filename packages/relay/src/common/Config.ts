@@ -79,16 +79,16 @@ export class Config implements IConfig {
         this.relay.readFromObject(cfg.relay);
         this.contracts.readFromObject(cfg.contracts);
         this.metrics.readFromObject(cfg.metrics);
-
-        console.log("Config.server", JSON.stringify(this.server));
-        console.log("Config.database", JSON.stringify(this.database));
-        console.log("Config.graph_sidechain", JSON.stringify(this.graph_sidechain));
-        console.log("Config.graph_mainchain", JSON.stringify(this.graph_mainchain));
-        console.log("Config.logging", JSON.stringify(this.logging));
-        console.log("Config.scheduler", JSON.stringify(this.scheduler));
-        console.log("Config.relay", JSON.stringify(this.relay));
-        console.log("Config.contracts", JSON.stringify(this.contracts));
-        console.log("Config.metrics", JSON.stringify(this.metrics));
+        //
+        // console.log("Config.server", JSON.stringify(this.server));
+        // console.log("Config.database", JSON.stringify(this.database));
+        // console.log("Config.graph_sidechain", JSON.stringify(this.graph_sidechain));
+        // console.log("Config.graph_mainchain", JSON.stringify(this.graph_mainchain));
+        // console.log("Config.logging", JSON.stringify(this.logging));
+        // console.log("Config.scheduler", JSON.stringify(this.scheduler));
+        // console.log("Config.relay", JSON.stringify(this.relay));
+        // console.log("Config.contracts", JSON.stringify(this.contracts));
+        // console.log("Config.metrics", JSON.stringify(this.metrics));
     }
 }
 

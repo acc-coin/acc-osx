@@ -15,12 +15,13 @@ import { RelaySigners } from "./contract/Signers";
 import { INotificationEventHandler, INotificationSender, NotificationSender } from "./delegator/NotificationSender";
 import { Metrics } from "./metrics/Metrics";
 import { BridgeRouter } from "./routers/BridgeRouter";
+import { HistoryRouter } from "./routers/HistoryRouter";
 import { PhoneLinkRouter } from "./routers/PhoneLinkRouter";
+import { ProviderRouter } from "./routers/ProviderRouter";
 import { StorePurchaseRouter } from "./routers/StorePurchaseRouter";
 import { TokenRouter } from "./routers/TokenRouter";
 import { GraphStorage } from "./storage/GraphStorage";
 import { RelayStorage } from "./storage/RelayStorage";
-import { HistoryRouter } from "./routers/HistoryRouter";
 
 export class DefaultServer extends WebService {
     private readonly config: Config;
@@ -40,6 +41,7 @@ export class DefaultServer extends WebService {
     public readonly purchaseRouter: StorePurchaseRouter;
     public readonly tokenRouter: TokenRouter;
     public readonly phoneLinkRouter: PhoneLinkRouter;
+    public readonly providerRouter: ProviderRouter;
     public readonly bridgeRouter: BridgeRouter;
     public readonly historyRouter: HistoryRouter;
 
@@ -155,7 +157,16 @@ export class DefaultServer extends WebService {
             this.graph_mainchain,
             this.relaySigners
         );
-
+        this.providerRouter = new ProviderRouter(
+            this,
+            this.config,
+            this.contractManager,
+            this.metrics,
+            this.storage,
+            this.graph_sidechain,
+            this.graph_mainchain,
+            this.relaySigners
+        );
         this.bridgeRouter = new BridgeRouter(
             this,
             this.config,
@@ -166,7 +177,6 @@ export class DefaultServer extends WebService {
             this.graph_mainchain,
             this.relaySigners
         );
-
         this.historyRouter = new HistoryRouter(
             this,
             this.config,
@@ -219,6 +229,7 @@ export class DefaultServer extends WebService {
         this.purchaseRouter.registerRoutes();
         this.tokenRouter.registerRoutes();
         this.phoneLinkRouter.registerRoutes();
+        this.providerRouter.registerRoutes();
         this.bridgeRouter.registerRoutes();
         this.historyRouter.registerRoutes();
 

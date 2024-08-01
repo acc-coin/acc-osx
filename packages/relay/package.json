@@ -23,12 +23,13 @@
         "test:ForcedClose": "TESTING=true hardhat test test/ForcedClose.test.ts",
         "test:TemporaryAccount": "TESTING=true hardhat test test/TempararyAccount.test.ts",
         "test:ETC": "TESTING=true hardhat test test/ETC.test.ts",
+        "test:Bridge": "TESTING=true hardhat test test/Bridge.test.ts",
         "test:DelegatorApproval": "TESTING=true hardhat test test/DelegatorApproval.test.ts",
-        "test:LoyaltyTransfer": "TESTING=true hardhat test test/LoyaltyTransfer.test.ts",
+        "test:DelegatedTransfer": "TESTING=true hardhat test test/DelegatedTransfer.test.ts",
         "test:LoyaltyBridge": "TESTING=true hardhat test test/LoyaltyBridge.test.ts",
         "test:LoyaltyExchanger": "TESTING=true hardhat test test/LoyaltyExchanger.test.ts",
-        "test:Bridge": "TESTING=true hardhat test test/Bridge.test.ts",
-        "test:DelegatedTransfer": "TESTING=true hardhat test test/DelegatedTransfer.test.ts"
+        "test:LoyaltyProvider": "TESTING=true hardhat test test/LoyaltyProvider.test.ts",
+        "test:LoyaltyTransfer": "TESTING=true hardhat test test/LoyaltyTransfer.test.ts"
     },
     "repository": {
         "type": "git",
