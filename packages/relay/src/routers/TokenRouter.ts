@@ -504,6 +504,9 @@ export class TokenRouter {
                 }
             }
 
+            const isProvider = await this.contractManager.sideLedgerContract.isProvider(account);
+            const assistant = await this.contractManager.sideLedgerContract.assistantOf(account);
+
             const symbol = await this.contractManager.sideTokenContract.symbol();
             const name = await this.contractManager.sideTokenContract.name();
             const tokenAmount = BOACoin.make(1).value;
@@ -546,6 +549,10 @@ export class TokenRouter {
                             symbol: defaultCurrencySymbol,
                             value: pointAmount.toString(),
                         },
+                    },
+                    provider: {
+                        enable: isProvider,
+                        assistant,
                     },
                     ledger: {
                         point: { balance: pointBalance.toString(), value: pointValue.toString() },

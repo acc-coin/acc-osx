@@ -109,6 +109,15 @@ describe("Test of LoyaltyProvider", function () {
         }
     });
 
+    it("Check Summary of Account", async () => {
+        const response = await client.get(
+            URI(serverURL).directory(`/v1/summary/account/${deployments.accounts.users[0].address}`).toString()
+        );
+
+        expect(response.data.data.provider.enable).to.deep.equal(false);
+        expect(response.data.data.provider.assistant).to.deep.equal(AddressZero);
+    });
+
     it("Register Provide", async () => {
         expect(await contractManager.sideLedgerContract.isProvider(deployments.accounts.users[0].address)).equal(false);
 
@@ -119,6 +128,15 @@ describe("Test of LoyaltyProvider", function () {
         ).emit(contractManager.sideLedgerContract, "RegisteredProvider");
 
         expect(await contractManager.sideLedgerContract.isProvider(deployments.accounts.users[0].address)).equal(true);
+    });
+
+    it("Check Summary of Account", async () => {
+        const response = await client.get(
+            URI(serverURL).directory(`/v1/summary/account/${deployments.accounts.users[0].address}`).toString()
+        );
+
+        expect(response.data.data.provider.enable).to.deep.equal(true);
+        expect(response.data.data.provider.assistant).to.deep.equal(AddressZero);
     });
 
     it("Balance of Provider", async () => {
@@ -222,6 +240,15 @@ describe("Test of LoyaltyProvider", function () {
         );
         expect(response3.data.data.provider).to.deep.equal(provider.address);
         expect(response3.data.data.assistant).to.deep.equal(assistant.address);
+    });
+
+    it("Check Summary of Account", async () => {
+        const response = await client.get(
+            URI(serverURL).directory(`/v1/summary/account/${deployments.accounts.users[0].address}`).toString()
+        );
+
+        expect(response.data.data.provider.enable).to.deep.equal(true);
+        expect(response.data.data.provider.assistant).to.deep.equal(deployments.accounts.users[1].address);
     });
 
     it("Provide Point for Address by Assistant", async () => {
