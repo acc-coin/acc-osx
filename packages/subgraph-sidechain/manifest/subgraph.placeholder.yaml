@@ -83,6 +83,10 @@ dataSources:
       eventHandlers:
         - event: SavedPurchase(string,uint256,uint256,string,bytes32,address,bytes32,address)
           handler: handleSavedPurchase
+        - event: ProvidedLoyaltyPointToAddress(address,address,uint256,uint256,uint256,uint256)
+          handler: handleProvidedLoyaltyPointToAddress
+        - event: ProvidedLoyaltyPointToPhone(address,bytes32,uint256,uint256,uint256,uint256)
+          handler: handleProvidedLoyaltyPointToPhone
       file: ./src/ledger.ts
 
   - kind: ethereum

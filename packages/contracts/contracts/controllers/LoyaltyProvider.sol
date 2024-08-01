@@ -45,8 +45,22 @@ contract LoyaltyProvider is LoyaltyProviderStorage, Initializable, OwnableUpgrad
         address sender
     );
 
-    event ProvidedLoyaltyPointToAddress(address provider, address receiver, uint256 amount);
-    event ProvidedLoyaltyPointToPhone(address provider, bytes32 receiver, uint256 amount);
+    event ProvidedLoyaltyPointToAddress(
+        address provider,
+        address receiver,
+        uint256 amountPoint,
+        uint256 amountToken,
+        uint256 balancePoint,
+        uint256 balanceToken
+    );
+    event ProvidedLoyaltyPointToPhone(
+        address provider,
+        bytes32 receiver,
+        uint256 amountPoint,
+        uint256 amountToken,
+        uint256 balancePoint,
+        uint256 balanceToken
+    );
 
     function initialize(
         address _validatorAddress,
@@ -297,7 +311,10 @@ contract LoyaltyProvider is LoyaltyProviderStorage, Initializable, OwnableUpgrad
         );
         ledgerContract.increaseNonce(sender);
 
-        emit ProvidedLoyaltyPointToAddress(_provider, _receiver, _point);
+        uint256 amountToken = currencyRateContract.convertPointToToken(_point);
+        uint256 balancePoint = ledgerContract.pointBalanceOf(_provider);
+        uint256 balanceToken = ledgerContract.tokenBalanceOf(_provider);
+        emit ProvidedLoyaltyPointToAddress(_provider, _receiver, _point, amountToken, balancePoint, balanceToken);
     }
 
     function provideToPhone(address _provider, bytes32 _phoneHash, uint256 _point, bytes calldata _signature) external {
@@ -355,6 +372,9 @@ contract LoyaltyProvider is LoyaltyProviderStorage, Initializable, OwnableUpgrad
         }
         ledgerContract.increaseNonce(sender);
 
-        emit ProvidedLoyaltyPointToPhone(_provider, _phoneHash, _point);
+        uint256 amountToken = currencyRateContract.convertPointToToken(_point);
+        uint256 balancePoint = ledgerContract.pointBalanceOf(_provider);
+        uint256 balanceToken = ledgerContract.tokenBalanceOf(_provider);
+        emit ProvidedLoyaltyPointToPhone(_provider, _phoneHash, _point, amountToken, balancePoint, balanceToken);
     }
 }

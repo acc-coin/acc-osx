@@ -349,7 +349,7 @@ describe("Test for Ledger", () => {
                 .withNamedArgs({
                     provider: deployments.accounts.users[0].address,
                     receiver: deployments.accounts.users[1].address,
-                    amount: providePoint,
+                    amountPoint: providePoint,
                 });
             const balance = await ledgerContract.pointBalanceOf(deployments.accounts.users[1].address);
             expect(balance).equal(providePoint);
@@ -408,7 +408,7 @@ describe("Test for Ledger", () => {
                 .withNamedArgs({
                     provider: provider.address,
                     receiver: receiver.address,
-                    amount: providePoint,
+                    amountPoint: providePoint,
                 });
             const balance = await ledgerContract.pointBalanceOf(receiver.address);
             expect(balance).equal(providePoint);
@@ -434,7 +434,7 @@ describe("Test for Ledger", () => {
                 .withNamedArgs({
                     provider: deployments.accounts.users[0].address,
                     receiver: phoneHashes[0],
-                    amount: providePoint,
+                    amountPoint: providePoint,
                 });
 
             const balance = await ledgerContract.unPayablePointBalanceOf(phoneHashes[0]);
