@@ -180,7 +180,7 @@ export class ProviderRouter {
             return res.status(200).json(ResponseMessage.getErrorMessage("2001", { validation: errors.array() }));
         }
 
-        const signerItem = await this.getRelaySigner(this.contractManager.mainChainProvider);
+        const signerItem = await this.getRelaySigner(this.contractManager.sideChainProvider);
         try {
             const provider: string = String(req.body.provider).trim();
             const receiver: string = String(req.body.receiver).trim();

@@ -29,7 +29,8 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         uint256 balancePoint,
         string purchaseId,
         bytes32 shopId,
-        address provider
+        address provider,
+        uint256 consumedToken
     );
 
     /// @notice 포인트가 지급될 때 발생되는 이벤트
@@ -41,7 +42,8 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         uint256 balancePoint,
         string purchaseId,
         bytes32 shopId,
-        address provider
+        address provider,
+        uint256 consumedToken
     );
 
     event Refunded(
@@ -231,14 +233,15 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         bytes32 _shopId,
         address _sender
     ) internal {
+        uint256 consumedToken = 0;
         if (_sender == systemAccount) {
             unPayablePointBalances[_phone] += _loyaltyPoint;
         } else {
-            uint256 amountToken = currencyRateContract.convertPointToToken(_loyaltyPoint);
-            require(tokenBalances[_sender] >= amountToken, "1511");
+            consumedToken = currencyRateContract.convertPointToToken(_loyaltyPoint);
+            require(tokenBalances[_sender] >= consumedToken, "1511");
 
             unPayablePointBalances[_phone] += _loyaltyPoint;
-            tokenBalances[_sender] -= amountToken;
+            tokenBalances[_sender] -= consumedToken;
         }
         uint256 balance = unPayablePointBalances[_phone];
         emit ProvidedUnPayablePoint(
@@ -249,7 +252,8 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
             balance,
             _purchaseId,
             _shopId,
-            _sender
+            _sender,
+            consumedToken
         );
     }
 
@@ -281,18 +285,29 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         bytes32 _shopId,
         address _sender
     ) internal {
+        uint256 consumedToken = 0;
         if (_sender == systemAccount) {
             pointBalances[_account] += _loyaltyPoint;
         } else {
-            uint256 amountToken = currencyRateContract.convertPointToToken(_loyaltyPoint);
-            require(tokenBalances[_sender] >= amountToken, "1511");
+            consumedToken = currencyRateContract.convertPointToToken(_loyaltyPoint);
+            require(tokenBalances[_sender] >= consumedToken, "1511");
 
             pointBalances[_account] += _loyaltyPoint;
-            tokenBalances[_sender] -= amountToken;
-            tokenBalances[systemAccount] += amountToken;
+            tokenBalances[_sender] -= consumedToken;
+            tokenBalances[systemAccount] += consumedToken;
         }
         uint256 balance = pointBalances[_account];
-        emit ProvidedPoint(_account, _loyaltyPoint, _loyaltyValue, _currency, balance, _purchaseId, _shopId, _sender);
+        emit ProvidedPoint(
+            _account,
+            _loyaltyPoint,
+            _loyaltyValue,
+            _currency,
+            balance,
+            _purchaseId,
+            _shopId,
+            _sender,
+            consumedToken
+        );
     }
 
     function refund(
