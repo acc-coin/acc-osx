@@ -278,7 +278,8 @@ describe("Test of Server", function () {
                 };
                 purchaseParam.signature = await ContractUtils.getPurchaseSignature(
                     deployments.accounts.system,
-                    purchaseParam
+                    purchaseParam,
+                    contractManager.sideChainId
                 );
                 const purchaseMessage = ContractUtils.getPurchasesMessage(
                     0,
@@ -756,7 +757,8 @@ describe("Test of Server", function () {
                 };
                 purchaseParam.signature = await ContractUtils.getPurchaseSignature(
                     deployments.accounts.system,
-                    purchaseParam
+                    purchaseParam,
+                    contractManager.sideChainId
                 );
                 const purchaseMessage = ContractUtils.getPurchasesMessage(
                     0,
@@ -1161,7 +1163,8 @@ describe("Test of Server", function () {
                 };
                 purchaseParam.signature = await ContractUtils.getPurchaseSignature(
                     deployments.accounts.system,
-                    purchaseParam
+                    purchaseParam,
+                    contractManager.sideChainId
                 );
                 const purchaseMessage = ContractUtils.getPurchasesMessage(
                     0,
@@ -1655,7 +1658,8 @@ describe("Test of Server", function () {
             };
             purchaseParam.signature = await ContractUtils.getPurchaseSignature(
                 deployments.accounts.system,
-                purchaseParam
+                purchaseParam,
+                contractManager.sideChainId
             );
             const purchaseMessage = ContractUtils.getPurchasesMessage(0, [purchaseParam], contractManager.sideChainId);
             const signatures = await Promise.all(

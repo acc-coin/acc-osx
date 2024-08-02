@@ -220,7 +220,8 @@ describe("Test of Server", function () {
                     };
                     purchaseItem.signature = await ContractUtils.getPurchaseSignature(
                         deployments.accounts.system,
-                        purchaseItem
+                        purchaseItem,
+                        contractManager.sideChainId
                     );
                     return purchaseItem;
                 })

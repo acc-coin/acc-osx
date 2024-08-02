@@ -247,11 +247,11 @@ export class ContractUtils {
         account: string,
         amount: BigNumberish,
         nonce: BigNumberish,
-        chainId?: BigNumberish
+        chainId: BigNumberish
     ): Uint8Array {
         const encodedResult = defaultAbiCoder.encode(
             ["bytes32", "address", "uint256", "uint256", "uint256"],
-            [shopId, account, amount, chainId ? chainId : hre.ethers.provider.network.chainId, nonce]
+            [shopId, account, amount, chainId, nonce]
         );
         return arrayify(keccak256(encodedResult));
     }
@@ -724,7 +724,7 @@ export class ContractUtils {
             phone: BytesLike;
             sender: string;
         },
-        chainId?: BigNumberish
+        chainId: BigNumberish
     ): Promise<string> {
         const encodedData = defaultAbiCoder.encode(
             ["string", "uint256", "uint256", "string", "bytes32", "address", "bytes32", "address", "uint256"],
@@ -737,7 +737,7 @@ export class ContractUtils {
                 purchase.account,
                 purchase.phone,
                 purchase.sender,
-                chainId ? chainId : hre.ethers.provider.network.chainId,
+                chainId,
             ]
         );
         return signer.signMessage(arrayify(keccak256(encodedData)));
@@ -748,11 +748,11 @@ export class ContractUtils {
         receiver: string,
         amount: BigNumberish,
         nonce: BigNumberish,
-        chainId?: BigNumberish
+        chainId: BigNumberish
     ): Uint8Array {
         const encodedResult = defaultAbiCoder.encode(
             ["address", "address", "uint256", "uint256", "uint256"],
-            [provider, receiver, amount, chainId ? chainId : hre.ethers.provider.network.chainId, nonce]
+            [provider, receiver, amount, chainId, nonce]
         );
         return arrayify(keccak256(encodedResult));
     }
@@ -762,11 +762,11 @@ export class ContractUtils {
         receiver: BytesLike,
         amount: BigNumberish,
         nonce: BigNumberish,
-        chainId?: BigNumberish
+        chainId: BigNumberish
     ): Uint8Array {
         const encodedResult = defaultAbiCoder.encode(
             ["address", "bytes32", "uint256", "uint256", "uint256"],
-            [provider, receiver, amount, chainId ? chainId : hre.ethers.provider.network.chainId, nonce]
+            [provider, receiver, amount, chainId, nonce]
         );
         return arrayify(keccak256(encodedResult));
     }
@@ -775,11 +775,11 @@ export class ContractUtils {
         provider: string,
         assistance: string,
         nonce: BigNumberish,
-        chainId?: BigNumberish
+        chainId: BigNumberish
     ): Uint8Array {
         const encodedResult = defaultAbiCoder.encode(
             ["address", "address", "uint256", "uint256"],
-            [provider, assistance, chainId ? chainId : hre.ethers.provider.network.chainId, nonce]
+            [provider, assistance, chainId, nonce]
         );
         return arrayify(keccak256(encodedResult));
     }

@@ -215,7 +215,8 @@ describe("Test of Delegator", function () {
                     };
                     purchaseItem.signature = await ContractUtils.getPurchaseSignature(
                         deployments.accounts.system,
-                        purchaseItem
+                        purchaseItem,
+                        contractManager.sideChainId
                     );
                     return purchaseItem;
                 })

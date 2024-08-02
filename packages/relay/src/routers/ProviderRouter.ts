@@ -191,7 +191,13 @@ export class ProviderRouter {
             if (assistant === AddressZero) assistant = provider;
 
             const nonce = await this.contractManager.sideLedgerContract.nonceOf(assistant);
-            const message = ContractUtils.getProvidePointToAddressMessage(provider, receiver, amount, nonce);
+            const message = ContractUtils.getProvidePointToAddressMessage(
+                provider,
+                receiver,
+                amount,
+                nonce,
+                this.contractManager.sideChainId
+            );
             if (!ContractUtils.verifyMessage(assistant, message, signature))
                 return res.status(200).json(ResponseMessage.getErrorMessage("1501"));
             const tx = await this.contractManager.sideLoyaltyProviderContract
@@ -228,7 +234,13 @@ export class ProviderRouter {
             if (assistant === AddressZero) assistant = provider;
 
             const nonce = await this.contractManager.sideLedgerContract.nonceOf(assistant);
-            const message = ContractUtils.getProvidePointToPhoneMessage(provider, receiver, amount, nonce);
+            const message = ContractUtils.getProvidePointToPhoneMessage(
+                provider,
+                receiver,
+                amount,
+                nonce,
+                this.contractManager.sideChainId
+            );
             if (!ContractUtils.verifyMessage(assistant, message, signature))
                 return res.status(200).json(ResponseMessage.getErrorMessage("1501"));
             const tx = await this.contractManager.sideLoyaltyProviderContract
@@ -261,7 +273,12 @@ export class ProviderRouter {
             const signature: string = String(req.body.signature).trim();
 
             const nonce = await this.contractManager.sideLedgerContract.nonceOf(provider);
-            const message = ContractUtils.getRegisterAssistanceMessage(provider, assistant, nonce);
+            const message = ContractUtils.getRegisterAssistanceMessage(
+                provider,
+                assistant,
+                nonce,
+                this.contractManager.sideChainId
+            );
             if (!ContractUtils.verifyMessage(provider, message, signature))
                 return res.status(200).json(ResponseMessage.getErrorMessage("1501"));
             const tx = await this.contractManager.sideLedgerContract

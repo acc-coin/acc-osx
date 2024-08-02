@@ -299,7 +299,8 @@ describe("Test for Shop", () => {
                     };
                     purchaseParam.signature = await ContractUtils.getPurchaseSignature(
                         deployments.accounts.system,
-                        purchaseParam
+                        purchaseParam,
+                        contractManager.sideChainId
                     );
                     const purchaseMessage = ContractUtils.getPurchasesMessage(
                         0,
@@ -426,7 +427,8 @@ describe("Test for Shop", () => {
                     };
                     purchaseItem.signature = await ContractUtils.getPurchaseSignature(
                         deployments.accounts.system,
-                        purchaseItem
+                        purchaseItem,
+                        contractManager.sideChainId
                     );
                     return purchaseItem;
                 })

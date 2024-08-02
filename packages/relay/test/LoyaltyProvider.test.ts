@@ -14,9 +14,9 @@ import chai, { expect } from "chai";
 import { solidity } from "ethereum-waffle";
 
 import * as path from "path";
+import URI from "urijs";
 import { URL } from "url";
 
-import URI from "urijs";
 import { AddressZero } from "@ethersproject/constants";
 
 chai.use(solidity);
@@ -162,7 +162,8 @@ describe("Test of LoyaltyProvider", function () {
             provider.address,
             receiver.address,
             pointAmount,
-            nonce
+            nonce,
+            contractManager.sideChainId
         );
         const signature = await ContractUtils.signMessage(provider, message);
         const response = await client.post(URI(serverURL).directory("/v1/provider/send/account").toString(), {
@@ -193,7 +194,13 @@ describe("Test of LoyaltyProvider", function () {
         const pointAmount = Amount.make(10, 18).value;
         const tokenAmount = await contractManager.sideCurrencyRateContract.convertPointToToken(pointAmount);
         const nonce = await contractManager.sideLedgerContract.nonceOf(provider.address);
-        const message = ContractUtils.getProvidePointToPhoneMessage(provider.address, phoneHash, pointAmount, nonce);
+        const message = ContractUtils.getProvidePointToPhoneMessage(
+            provider.address,
+            phoneHash,
+            pointAmount,
+            nonce,
+            contractManager.sideChainId
+        );
         const signature = await ContractUtils.signMessage(provider, message);
         const response = await client.post(URI(serverURL).directory("/v1/provider/send/phoneHash").toString(), {
             provider: provider.address,
@@ -224,7 +231,12 @@ describe("Test of LoyaltyProvider", function () {
 
         const assistant = deployments.accounts.users[1];
         const nonce = await contractManager.sideLedgerContract.nonceOf(provider.address);
-        const message = ContractUtils.getRegisterAssistanceMessage(provider.address, assistant.address, nonce);
+        const message = ContractUtils.getRegisterAssistanceMessage(
+            provider.address,
+            assistant.address,
+            nonce,
+            contractManager.sideChainId
+        );
         const signature = await ContractUtils.signMessage(provider, message);
         const response2 = await client.post(URI(serverURL).directory(`/v1/provider/assistant/register`).toString(), {
             provider: provider.address,
@@ -264,7 +276,8 @@ describe("Test of LoyaltyProvider", function () {
             provider.address,
             receiver.address,
             pointAmount,
-            nonce
+            nonce,
+            contractManager.sideChainId
         );
         const signature = await ContractUtils.signMessage(assistant, message);
         const response = await client.post(URI(serverURL).directory("/v1/provider/send/account").toString(), {
@@ -296,7 +309,13 @@ describe("Test of LoyaltyProvider", function () {
         const pointAmount = Amount.make(10, 18).value;
         const tokenAmount = await contractManager.sideCurrencyRateContract.convertPointToToken(pointAmount);
         const nonce = await contractManager.sideLedgerContract.nonceOf(assistant.address);
-        const message = ContractUtils.getProvidePointToPhoneMessage(provider.address, phoneHash, pointAmount, nonce);
+        const message = ContractUtils.getProvidePointToPhoneMessage(
+            provider.address,
+            phoneHash,
+            pointAmount,
+            nonce,
+            contractManager.sideChainId
+        );
         const signature = await ContractUtils.signMessage(assistant, message);
         const response = await client.post(URI(serverURL).directory("/v1/provider/send/phoneHash").toString(), {
             provider: provider.address,
