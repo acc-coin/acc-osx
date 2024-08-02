@@ -28,7 +28,8 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         string currency,
         uint256 balancePoint,
         string purchaseId,
-        bytes32 shopId
+        bytes32 shopId,
+        address provider
     );
 
     /// @notice 포인트가 지급될 때 발생되는 이벤트
@@ -39,7 +40,8 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         string currency,
         uint256 balancePoint,
         string purchaseId,
-        bytes32 shopId
+        bytes32 shopId,
+        address provider
     );
 
     event Refunded(
@@ -239,7 +241,16 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
             tokenBalances[_sender] -= amountToken;
         }
         uint256 balance = unPayablePointBalances[_phone];
-        emit ProvidedUnPayablePoint(_phone, _loyaltyPoint, _loyaltyValue, _currency, balance, _purchaseId, _shopId);
+        emit ProvidedUnPayablePoint(
+            _phone,
+            _loyaltyPoint,
+            _loyaltyValue,
+            _currency,
+            balance,
+            _purchaseId,
+            _shopId,
+            _sender
+        );
     }
 
     /// @notice 포인트를 지급합니다.
@@ -281,7 +292,7 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
             tokenBalances[systemAccount] += amountToken;
         }
         uint256 balance = pointBalances[_account];
-        emit ProvidedPoint(_account, _loyaltyPoint, _loyaltyValue, _currency, balance, _purchaseId, _shopId);
+        emit ProvidedPoint(_account, _loyaltyPoint, _loyaltyValue, _currency, balance, _purchaseId, _shopId, _sender);
     }
 
     function refund(

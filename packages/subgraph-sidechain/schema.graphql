@@ -76,6 +76,7 @@ type UserTradeHistory @entity(immutable: true) {
   purchaseId: String
   paymentId: Bytes
   shopId: Bytes # bytes32
+  provider: Bytes
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -89,6 +90,7 @@ type UserUnPayableTradeHistory @entity(immutable: true) {
   balance: BigInt!
   purchaseId: String
   shopId: Bytes # bytes32
+  provider: Bytes
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

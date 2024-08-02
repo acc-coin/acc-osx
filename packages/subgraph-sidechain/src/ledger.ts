@@ -149,6 +149,10 @@ export function handleDepositedForHistory(event: DepositedEvent): void {
     entity.feeValue = BigInt.fromI32(0);
     entity.balanceToken = event.params.balanceToken.div(AmountUnit);
     entity.balancePoint = balanceEntity.point;
+    entity.purchaseId = "";
+    entity.paymentId = NullBytes32;
+    entity.shopId = NullBytes32;
+    entity.provider = NullBytes32;
 
     entity.blockNumber = event.block.number;
     entity.blockTimestamp = event.block.timestamp;
@@ -176,6 +180,10 @@ export function handleWithdrawnForHistory(event: WithdrawnEvent): void {
     entity.feeValue = BigInt.fromI32(0);
     entity.balanceToken = event.params.balanceToken.div(AmountUnit);
     entity.balancePoint = balanceEntity.point;
+    entity.purchaseId = "";
+    entity.paymentId = NullBytes32;
+    entity.shopId = NullBytes32;
+    entity.provider = NullBytes32;
 
     entity.blockNumber = event.block.number;
     entity.blockTimestamp = event.block.timestamp;
@@ -224,6 +232,10 @@ export function handleChangedPointForHistory(event: ChangedToPayablePointEvent):
     entity.feeValue = BigInt.fromI32(0);
     entity.balancePoint = event.params.balancePoint.div(AmountUnit);
     entity.balanceToken = balanceEntity.token;
+    entity.purchaseId = "";
+    entity.paymentId = NullBytes32;
+    entity.shopId = NullBytes32;
+    entity.provider = NullBytes32;
 
     entity.blockNumber = event.block.number;
     entity.blockTimestamp = event.block.timestamp;
@@ -266,6 +278,7 @@ export function handleChangedPointToTokenForHistory(event: ChangedPointToTokenEv
     entity.purchaseId = "";
     entity.paymentId = NullBytes32;
     entity.shopId = NullBytes32;
+    entity.provider = NullBytes32;
 
     entity.blockNumber = event.block.number;
     entity.blockTimestamp = event.block.timestamp;
@@ -314,6 +327,7 @@ export function handleProvidedForUnPayablePointForHistory(event: ProvidedUnPayab
     entity.balance = event.params.balancePoint.div(AmountUnit);
     entity.purchaseId = event.params.purchaseId;
     entity.shopId = event.params.shopId;
+    entity.provider = event.params.provider;
 
     entity.blockNumber = event.block.number;
     entity.blockTimestamp = event.block.timestamp;
@@ -345,6 +359,7 @@ export function handleProvidedPointForHistory(event: ProvidedPointEvent): void {
     entity.purchaseId = event.params.purchaseId;
     entity.paymentId = NullBytes32;
     entity.shopId = event.params.shopId;
+    entity.provider = event.params.provider;
 
     entity.blockNumber = event.block.number;
     entity.blockTimestamp = event.block.timestamp;
@@ -376,6 +391,7 @@ export function handleRefundedForHistory(event: RefundedEvent): void {
     entity.purchaseId = "";
     entity.paymentId = NullBytes32;
     entity.shopId = event.params.shopId;
+    entity.provider = NullBytes32;
 
     entity.blockNumber = event.block.number;
     entity.blockTimestamp = event.block.timestamp;
@@ -415,6 +431,7 @@ export function handleTransferredLoyaltyTokenForHistory(event: TransferredLoyalt
         entity.purchaseId = "";
         entity.paymentId = NullBytes32;
         entity.shopId = NullBytes32;
+        entity.provider = NullBytes32;
 
         entity.blockNumber = event.block.number;
         entity.blockTimestamp = event.block.timestamp;
@@ -447,6 +464,7 @@ export function handleTransferredLoyaltyTokenForHistory(event: TransferredLoyalt
         entity.purchaseId = "";
         entity.paymentId = NullBytes32;
         entity.shopId = NullBytes32;
+        entity.provider = NullBytes32;
 
         entity.blockNumber = event.block.number;
         entity.blockTimestamp = event.block.timestamp;
@@ -515,6 +533,7 @@ export function handlePaidPointForHistory(event: LoyaltyPaymentEventEvent): void
     entity.purchaseId = event.params.payment.purchaseId;
     entity.paymentId = event.params.payment.paymentId;
     entity.shopId = event.params.payment.shopId;
+    entity.provider = NullBytes32;
 
     entity.blockNumber = event.block.number;
     entity.blockTimestamp = event.block.timestamp;
@@ -546,6 +565,7 @@ export function handleCanceledPointForHistory(event: LoyaltyPaymentEventEvent): 
     entity.purchaseId = event.params.payment.purchaseId;
     entity.paymentId = event.params.payment.paymentId;
     entity.shopId = event.params.payment.shopId;
+    entity.provider = NullBytes32;
 
     entity.blockNumber = event.block.number;
     entity.blockTimestamp = event.block.timestamp;
@@ -594,6 +614,7 @@ export function handleBurnedPointForHistory(event: BurnedPointEvent): void {
     entity.purchaseId = "";
     entity.paymentId = NullBytes32;
     entity.shopId = NullBytes32;
+    entity.provider = NullBytes32;
 
     entity.blockNumber = event.block.number;
     entity.blockTimestamp = event.block.timestamp;
@@ -674,6 +695,7 @@ export function handleBridgeDepositedForHistory(event: BridgeDepositedEvent): vo
     entity.purchaseId = "";
     entity.paymentId = NullBytes32;
     entity.shopId = NullBytes32;
+    entity.provider = NullBytes32;
 
     entity.blockNumber = event.block.number;
     entity.blockTimestamp = event.block.timestamp;
@@ -722,6 +744,7 @@ export function handleBridgeWithdrawnForHistory(event: BridgeWithdrawnEvent): vo
     entity.purchaseId = "";
     entity.paymentId = NullBytes32;
     entity.shopId = NullBytes32;
+    entity.provider = NullBytes32;
 
     entity.blockNumber = event.block.number;
     entity.blockTimestamp = event.block.timestamp;
@@ -766,6 +789,12 @@ export function handleProvidedLoyaltyPointToAddress(event: ProvidedLoyaltyPointT
     entity.purchaseId = "";
     entity.paymentId = event.params.receiver;
     entity.shopId = NullBytes32;
+    entity.provider = event.params.provider;
+
+    entity.blockNumber = event.block.number;
+    entity.blockTimestamp = event.block.timestamp;
+    entity.transactionHash = event.transaction.hash;
+    entity.save();
 }
 
 export function handleProvidedLoyaltyPointToPhone(event: ProvidedLoyaltyPointToPhoneEvent): void {
@@ -802,4 +831,10 @@ export function handleProvidedLoyaltyPointToPhone(event: ProvidedLoyaltyPointToP
     entity.purchaseId = "";
     entity.paymentId = event.params.receiver;
     entity.shopId = NullBytes32;
+    entity.provider = event.params.provider;
+
+    entity.blockNumber = event.block.number;
+    entity.blockTimestamp = event.block.timestamp;
+    entity.transactionHash = event.transaction.hash;
+    entity.save();
 }
