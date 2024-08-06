@@ -30,7 +30,8 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         string purchaseId,
         bytes32 shopId,
         address provider,
-        uint256 consumedToken
+        uint256 consumedToken,
+        uint256 providerBalanceToken
     );
 
     /// @notice 포인트가 지급될 때 발생되는 이벤트
@@ -43,7 +44,8 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
         string purchaseId,
         bytes32 shopId,
         address provider,
-        uint256 consumedToken
+        uint256 consumedToken,
+        uint256 providerBalanceToken
     );
 
     event Refunded(
@@ -244,6 +246,7 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
             tokenBalances[_sender] -= consumedToken;
         }
         uint256 balance = unPayablePointBalances[_phone];
+        uint256 providerTokenBalance = tokenBalances[_sender];
         emit ProvidedUnPayablePoint(
             _phone,
             _loyaltyPoint,
@@ -253,7 +256,8 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
             _purchaseId,
             _shopId,
             _sender,
-            consumedToken
+            consumedToken,
+            providerTokenBalance
         );
     }
 
@@ -297,6 +301,7 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
             tokenBalances[systemAccount] += consumedToken;
         }
         uint256 balance = pointBalances[_account];
+        uint256 providerTokenBalance = tokenBalances[_sender];
         emit ProvidedPoint(
             _account,
             _loyaltyPoint,
@@ -306,7 +311,8 @@ contract Ledger is LedgerStorage, Initializable, OwnableUpgradeable, UUPSUpgrade
             _purchaseId,
             _shopId,
             _sender,
-            consumedToken
+            consumedToken,
+            providerTokenBalance
         );
     }
 

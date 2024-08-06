@@ -1900,10 +1900,10 @@ abstract-leveldown@~6.2.1:
     level-supports "~1.0.0"
     xtend "~4.0.0"
 
-acc-bridge-contracts-v2@~2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/acc-bridge-contracts-v2/-/acc-bridge-contracts-v2-2.3.1.tgz#0e6e5bd4297b024f3ed82b8e7dbcea34cd4f81dd"
-  integrity sha512-3wYqCOuW/LJZLjjNblA8iyig3+9pK4G3IHH++/Zm5wDjHv1crvtLOM1x+QepKrsXMA4MWONZz/DrwIol+80e0Q==
+acc-bridge-contracts-v2@~2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/acc-bridge-contracts-v2/-/acc-bridge-contracts-v2-2.5.0.tgz#f5e9e1eb60650f6938e00e121894971ac846367e"
+  integrity sha512-qE3jxuinP+i4QKzDddbCACuBxnMUbyVFy24PGyUzscIR5bqkLYsZRaRb7Ozq1lnJHZSr226e6axvIDQDRpgkxg==
   dependencies:
     "@openzeppelin/contracts" "^4.9.5"
     "@openzeppelin/contracts-upgradeable" "^4.9.5"

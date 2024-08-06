@@ -7,11 +7,7 @@ import {
     ProvidedUnPayablePoint as ProvidedUnPayablePointEvent,
     Withdrawn as WithdrawnEvent,
 } from "../generated/Ledger/Ledger";
-import {
-    ProvidedLoyaltyPointToPhone as ProvidedLoyaltyPointToPhoneEvent,
-    ProvidedLoyaltyPointToAddress as ProvidedLoyaltyPointToAddressEvent,
-    SavedPurchase as SavedPurchaseEvent,
-} from "../generated/LoyaltyProvider/LoyaltyProvider";
+import { SavedPurchase as SavedPurchaseEvent } from "../generated/LoyaltyProvider/LoyaltyProvider";
 import { LoyaltyPaymentEvent as LoyaltyPaymentEventEvent } from "../generated/LoyaltyConsumer/LoyaltyConsumer";
 import {
     ChangedToPayablePoint as ChangedToPayablePointEvent,
@@ -34,7 +30,6 @@ import {
     LoyaltyPaymentEvent,
     LoyaltyBridgeDeposited,
     LoyaltyBridgeWithdrawn,
-    LoyaltyProvide,
     BurnedPoint,
     BurnedUnPayablePoint,
 } from "../generated/schema";
@@ -335,6 +330,13 @@ export function handleProvidedForUnPayablePointForHistory(event: ProvidedUnPayab
     entity.save();
 
     if (event.params.consumedToken.gt(BigInt.fromI32(0))) {
+        const balanceEntity2 = handleChangedBalanceToken(
+            event.params.provider,
+            event.params.providerBalanceToken,
+            event.block.number,
+            event.block.timestamp,
+            event.transaction.hash
+        );
         let entity2 = new UserTradeHistory(
             event.transaction.hash.concatI32(event.logIndex.plus(BigInt.fromI32(64)).toI32())
         );
@@ -344,8 +346,8 @@ export function handleProvidedForUnPayablePointForHistory(event: ProvidedUnPayab
         entity2.amountPoint = BigInt.fromI32(0);
         entity2.amountToken = event.params.consumedToken.div(AmountUnit);
         entity2.amountValue = event.params.providedValue.div(AmountUnit);
-        entity2.feePoint = BigInt.fromI32(0);
-        entity2.feeToken = BigInt.fromI32(0);
+        entity2.feePoint = balanceEntity2.point;
+        entity2.feeToken = event.params.providerBalanceToken.div(AmountUnit);
         entity2.feeValue = BigInt.fromI32(0);
         entity2.currency = event.params.currency;
         entity2.balancePoint = BigInt.fromI32(0);
@@ -394,6 +396,13 @@ export function handleProvidedPointForHistory(event: ProvidedPointEvent): void {
     entity.save();
 
     if (event.params.consumedToken.gt(BigInt.fromI32(0))) {
+        const balanceEntity2 = handleChangedBalanceToken(
+            event.params.provider,
+            event.params.providerBalanceToken,
+            event.block.number,
+            event.block.timestamp,
+            event.transaction.hash
+        );
         let entity2 = new UserTradeHistory(
             event.transaction.hash.concatI32(event.logIndex.plus(BigInt.fromI32(64)).toI32())
         );
@@ -407,8 +416,8 @@ export function handleProvidedPointForHistory(event: ProvidedPointEvent): void {
         entity2.feeToken = BigInt.fromI32(0);
         entity2.feeValue = BigInt.fromI32(0);
         entity2.currency = event.params.currency;
-        entity2.balancePoint = BigInt.fromI32(0);
-        entity2.balanceToken = BigInt.fromI32(0);
+        entity2.balancePoint = balanceEntity2.point;
+        entity2.balanceToken = event.params.providerBalanceToken.div(AmountUnit);
         entity2.purchaseId = "";
         entity2.paymentId = event.params.account;
         entity2.shopId = NullBytes32;
@@ -807,95 +816,3 @@ export function handleBridgeWithdrawnForHistory(event: BridgeWithdrawnEvent): vo
 }
 
 // endregion
-
-export function handleProvidedLoyaltyPointToAddress(event: ProvidedLoyaltyPointToAddressEvent): void {
-    let entity1 = new LoyaltyProvide(event.transaction.hash.concatI32(event.logIndex.toI32()));
-    entity1.provider = event.params.provider;
-    entity1.receiver = event.params.receiver;
-    entity1.amountPoint = event.params.amountPoint.div(AmountUnit);
-    entity1.amountToken = event.params.amountToken.div(AmountUnit);
-
-    entity1.blockNumber = event.block.number;
-    entity1.blockTimestamp = event.block.timestamp;
-    entity1.transactionHash = event.transaction.hash;
-    entity1.save();
-
-    const balanceEntity = handleChangedBalanceToken(
-        event.params.provider,
-        event.params.balanceToken,
-        event.block.number,
-        event.block.timestamp,
-        event.transaction.hash
-    );
-
-    let entity = new UserTradeHistory(
-        event.transaction.hash.concatI32(event.logIndex.plus(BigInt.fromI32(128)).toI32())
-    );
-    entity.account = event.params.provider;
-    entity.action = UserAction.TRANSFER_OUT;
-    entity.cancel = false;
-    entity.amountPoint = BigInt.fromI32(0);
-    entity.amountToken = event.params.amountToken.div(AmountUnit);
-    entity.amountValue = event.params.amountPoint.div(AmountUnit);
-    entity.feePoint = BigInt.fromI32(0);
-    entity.feeToken = BigInt.fromI32(0);
-    entity.feeValue = BigInt.fromI32(0);
-    entity.currency = "TOKEN";
-    entity.balanceToken = balanceEntity.token;
-    entity.balancePoint = balanceEntity.point;
-    entity.purchaseId = "";
-    entity.paymentId = event.params.receiver;
-    entity.shopId = NullBytes32;
-    entity.provider = event.params.provider;
-
-    entity.blockNumber = event.block.number;
-    entity.blockTimestamp = event.block.timestamp;
-    entity.transactionHash = event.transaction.hash;
-    entity.save();
-}
-
-export function handleProvidedLoyaltyPointToPhone(event: ProvidedLoyaltyPointToPhoneEvent): void {
-    let entity1 = new LoyaltyProvide(event.transaction.hash.concatI32(event.logIndex.toI32()));
-    entity1.provider = event.params.provider;
-    entity1.receiver = event.params.receiver;
-    entity1.amountPoint = event.params.amountPoint.div(AmountUnit);
-    entity1.amountToken = event.params.amountToken.div(AmountUnit);
-
-    entity1.blockNumber = event.block.number;
-    entity1.blockTimestamp = event.block.timestamp;
-    entity1.transactionHash = event.transaction.hash;
-    entity1.save();
-
-    const balanceEntity = handleChangedBalanceToken(
-        event.params.provider,
-        event.params.balanceToken,
-        event.block.number,
-        event.block.timestamp,
-        event.transaction.hash
-    );
-
-    let entity = new UserTradeHistory(
-        event.transaction.hash.concatI32(event.logIndex.plus(BigInt.fromI32(128)).toI32())
-    );
-    entity.account = event.params.provider;
-    entity.action = UserAction.TRANSFER_OUT;
-    entity.cancel = false;
-    entity.amountPoint = BigInt.fromI32(0);
-    entity.amountToken = event.params.amountToken.div(AmountUnit);
-    entity.amountValue = event.params.amountPoint.div(AmountUnit);
-    entity.feePoint = BigInt.fromI32(0);
-    entity.feeToken = BigInt.fromI32(0);
-    entity.feeValue = BigInt.fromI32(0);
-    entity.currency = "TOKEN";
-    entity.balanceToken = balanceEntity.token;
-    entity.balancePoint = balanceEntity.point;
-    entity.purchaseId = "";
-    entity.paymentId = event.params.receiver;
-    entity.shopId = NullBytes32;
-    entity.provider = event.params.provider;
-
-    entity.blockNumber = event.block.number;
-    entity.blockTimestamp = event.block.timestamp;
-    entity.transactionHash = event.transaction.hash;
-    entity.save();
-}
