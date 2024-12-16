@@ -98,9 +98,9 @@ export class ETCRouter {
             this.mobile_info.bind(this)
         );
 
-        this.app.get(
-            "/v1/mobile/exists/:account",
-            [param("account").exists().trim().isEthereumAddress(), query("type").exists()],
+        this.app.post(
+            "/v1/mobile/exists",
+            [body("account").exists().trim().isEthereumAddress(), body("token").exists()],
             this.mobile_exists.bind(this)
         );
     }
@@ -236,11 +236,11 @@ export class ETCRouter {
     }
 
     /**
-     * GET /v1/mobile/exists
+     * POST /v1/mobile/exists
      * @private
      */
     private async mobile_exists(req: express.Request, res: express.Response) {
-        logger.http(`GET /v1/mobile/exists ${req.ip}:${JSON.stringify(req.params)}`);
+        logger.http(`POST /v1/mobile/exists ${req.ip}:${JSON.stringify(req.body)}`);
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -248,11 +248,15 @@ export class ETCRouter {
         }
 
         try {
-            const account: string = String(req.params.account).trim();
-            const type: number = Number(req.query.type);
-            const shopId = req.query.shopId === undefined ? HashZero : String(req.query.shopId).trim();
+            const account: string = String(req.body.account).trim();
+            const type = req.body.type === undefined ? 0 : Number(req.body.type);
+            const shopId = req.body.shopId === undefined ? HashZero : String(req.body.shopId).trim();
+            const token: string = String(req.body.token).trim();
             const mobileData = await this.storage.getMobile(account, type, shopId);
-            const exists = mobileData !== undefined && mobileData.account.toLowerCase() === account.toLowerCase();
+            const exists =
+                mobileData !== undefined &&
+                mobileData.account.toLowerCase() === account.toLowerCase() &&
+                mobileData.token === token;
 
             this.metrics.add("success", 1);
             return res.status(200).json(
